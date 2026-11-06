@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lernplattform – Instandhaltung</title>
+<style>
+:root{
+  --bg:#06080b;
+  --bg2:#0b0f14;
+  --card:#0f151c;
+  --card2:#131b24;
+  --line:#1e2a36;
+  --line2:#2a3a4a;
+  --txt:#e6edf3;
+  --txt2:#a7b6c4;
+  --txt3:#7b8b9a;
+  --cy:#22d3ee;
+  --cy2:#0ea5b7;
+  --cydim:rgba(34,211,238,.12);
+  --gr:#34d399;
+  --rd:#f87171;
+  --am:#fbbf24;
+  --vio:#a78bfa;
+  --r:14px;
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    radial-gradient(1000px 600px at 82% -10%, rgba(34,211,238,.10), transparent 60%),
+    radial-gradient(800px 500px at 5% 0%, rgba(167,139,250,.07), transparent 55%),
+    var(--bg);
+  color:var(--txt);
+  font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--cy);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:rgba(34,211,238,.28)}
+
+/* ---------- Kopfzeile ---------- */
+header.topbar{
+  position:sticky;top:0;z-index:60;
+  background:rgba(6,8,11,.86);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{
+  max-width:1180px;margin:0 auto;padding:10px 20px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.brand .mark{
+  width:32px;height:32px;border-radius:9px;flex:none;
+  background:linear-gradient(145deg,var(--cy),#0891b2);
+  display:grid;place-items:center;color:#04252b;font-weight:800;font-size:15px;
+  box-shadow:0 0 18px rgba(34,211,238,.35);
+}
+.brand b{font-size:15px;letter-spacing:.04em;text-transform:uppercase}
+.brand span{display:block;font-size:11px;color:var(--txt3);letter-spacing:.08em;text-transform:uppercase;line-height:1.2}
+nav.mainnav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+nav.mainnav button{
+  background:transparent;border:1px solid transparent;color:var(--txt2);
+  font:inherit;font-size:13.5px;padding:7px 13px;border-radius:10px;cursor:pointer;
+  transition:.18s;
+}
+nav.mainnav button:hover{color:var(--txt);background:rgba(255,255,255,.04)}
+nav.mainnav button.active{
+  color:var(--cy);background:var(--cydim);border-color:rgba(34,211,238,.32);
+}
+
+/* ---------- Layout ---------- */
+main{max-width:1180px;margin:0 auto;padding:34px 20px 90px}
+.view{display:none;animation:fade .32s ease}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+h1{font-size:clamp(26px,4vw,40px);line-height:1.18;margin:0 0 10px;letter-spacing:-.02em}
+h2{font-size:clamp(20px,2.6vw,27px);margin:38px 0 16px;letter-spacing:-.01em}
+h3{font-size:18px;margin:26px 0 12px;color:var(--txt)}
+p{margin:0 0 12px}
+.lead{color:var(--txt2);font-size:17px;max-width:72ch}
+.eyebrow{
+  display:inline-block;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--cy);margin-bottom:14px;font-weight:600;
+}
+.muted{color:var(--txt3)}
+.small{font-size:13.5px}
+
+/* ---------- Karten ---------- */
+.card{
+  background:linear-gradient(180deg,var(--card),var(--bg2));
+  border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;
+}
+.grid{display:grid;gap:16px}
+.grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.grid.chapters{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+
+.chapter-card{
+  background:linear-gradient(180deg,var(--card),var(--bg2));
+  border:1px solid var(--line);border-radius:var(--r);
+  padding:20px;cursor:pointer;position:relative;overflow:hidden;
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+  display:flex;flex-direction:column;gap:10px;
+}
+.chapter-card:before{
+  content:"";position:absolute;inset:0 auto 0 0;width:3px;
+  background:linear-gradient(180deg,var(--cy),transparent);opacity:.5;transition:.2s;
+}
+.chapter-card:hover{transform:translateY(-3px);border-color:var(--line2);box-shadow:var(--shadow)}
+.chapter-card:hover:before{opacity:1}
+.chapter-card.done{border-color:rgba(52,211,153,.35)}
+.chapter-card.done:before{background:linear-gradient(180deg,var(--gr),transparent);opacity:1}
+.cc-top{display:flex;align-items:center;gap:10px}
+.cc-num{
+  font-size:11.5px;font-weight:700;letter-spacing:.1em;color:var(--cy);
+  background:var(--cydim);border:1px solid rgba(34,211,238,.25);
+  padding:2px 8px;border-radius:6px;
+}
+.cc-state{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);margin-left:auto}
+.cc-state.ok{color:var(--gr)}
+.cc-title{font-size:17px;font-weight:650;line-height:1.3}
+.cc-sub{font-size:13px;color:var(--txt3);line-height:1.45;flex:1}
+
+/* ---------- Fortschritt ---------- */
+.pbar{height:7px;border-radius:99px;background:#16202a;overflow:hidden}
+.pbar > i{display:block;height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--cy2),var(--cy));transition:width .5s ease}
+.pbar.green > i{background:linear-gradient(90deg,#059669,var(--gr))}
+.pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--txt3);margin-top:7px;letter-spacing:.03em}
+
+.hero{
+  border:1px solid var(--line);border-radius:20px;padding:34px;
+  background:
+    radial-gradient(700px 300px at 90% 0%, rgba(34,211,238,.12), transparent 70%),
+    linear-gradient(180deg,#0d1218,#080c11);
+  margin-bottom:26px;position:relative;overflow:hidden;
+}
+.hero .ring{position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;
+  border:1px solid rgba(34,211,238,.18);}
+.hero .ring:after{content:"";position:absolute;inset:34px;border-radius:50%;border:1px solid rgba(34,211,238,.10)}
+.statrow{display:flex;gap:26px;flex-wrap:wrap;margin-top:22px}
+.stat b{display:block;font-size:24px;color:var(--cy);font-weight:700;line-height:1.2}
+.stat span{font-size:12px;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em}
+
+/* ---------- Kapitelansicht ---------- */
+.chap-head{
+  border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:8px;
+}
+.chap-head .meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.badge{
+  font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;
+  padding:3px 9px;border-radius:6px;border:1px solid var(--line2);color:var(--txt2);
+  background:rgba(255,255,255,.03);
+}
+.badge.cy{border-color:rgba(34,211,238,.3);color:var(--cy);background:var(--cydim)}
+.badge.gr{border-color:rgba(52,211,153,.32);color:var(--gr);background:rgba(52,211,153,.1)}
+
+.page{
+  background:linear-gradient(180deg,var(--card),var(--bg2));
+  border:1px solid var(--line);border-radius:var(--r);
+  padding:24px 26px;margin:20px 0;
+  scroll-margin-top:90px;
+}
+.page-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.page-head .pn{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt3)}
+.page h3.title{font-size:20px;margin:2px 0 18px;color:var(--txt);line-height:1.3}
+.page h4{
+  font-size:13px;margin:22px 0 8px;color:var(--cy);letter-spacing:.06em;
+  text-transform:uppercase;font-weight:650;
+}
+.page h5{font-size:15px;margin:16px 0 6px;color:var(--txt)}
+.page ul,.page ol{margin:0 0 14px;padding-left:22px}
+.page li{margin:5px 0}
+.page li::marker{color:var(--cy2)}
+.page ul ul{margin:5px 0 5px}
+.page p{color:var(--txt2)}
+.page strong{color:var(--txt)}
+
+/* Auszeichnungsblöcke */
+.note{
+  border-left:3px solid var(--am);background:rgba(251,191,36,.07);
+  padding:12px 16px;border-radius:0 10px 10px 0;margin:14px 0;
+}
+.note.warn{border-left-color:var(--rd);background:rgba(248,113,113,.08)}
+.note.info{border-left-color:var(--cy);background:var(--cydim)}
+.note .lbl{
+  display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:700;margin-bottom:4px;color:var(--am);
+}
+.note.warn .lbl{color:var(--rd)}
+.note.info .lbl{color:var(--cy)}
+.note p:last-child,.note ul:last-child{margin-bottom:0}
+
+.def{
+  border:1px solid rgba(34,211,238,.26);background:linear-gradient(180deg,rgba(34,211,238,.08),rgba(34,211,238,.02));
+  border-radius:12px;padding:14px 18px;margin:14px 0;
+}
+.def .lbl{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cy);font-weight:700;margin-bottom:5px}
+.def p:last-child{margin-bottom:0}
+
+.example{
+  border:1px dashed var(--line2);border-radius:12px;padding:14px 18px;margin:14px 0;
+  background:rgba(167,139,250,.045);
+}
+.example .lbl{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--vio);font-weight:700;margin-bottom:5px}
+.example p:last-child,.example ul:last-child{margin-bottom:0}
+
+.figure{
+  border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:14px 0;
+  background:#0a0e13;
+}
+.figure .lbl{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt3);font-weight:700;margin-bottom:5px}
+.figure p{color:var(--txt2);font-size:14.5px;margin-bottom:6px}
+.figure p:last-child{margin-bottom:0}
+
+blockquote{
+  margin:14px 0;padding:12px 18px;border-left:3px solid var(--cy2);
+  background:rgba(255,255,255,.025);border-radius:0 10px 10px 0;
+  color:var(--txt2);font-style:italic;
+}
+
+table{
+  width:100%;border-collapse:collapse;margin:14px 0;font-size:14.5px;
+  background:#0a0e13;border-radius:10px;overflow:hidden;
+}
+th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{
+  background:rgba(34,211,238,.09);color:var(--cy);font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;font-weight:650;
+}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+td.k{color:var(--txt);font-weight:600;width:38%}
+.table-wrap{overflow-x:auto;margin:14px 0}
+.table-wrap table{margin:0;min-width:520px}
+
+.footnote{font-size:12px;color:var(--txt3);border-top:1px solid var(--line);padding-top:8px;margin-top:18px;letter-spacing:.02em}
+
+/* Kapitelnavigation */
+.chapnav{display:flex;gap:12px;justify-content:space-between;margin-top:28px;flex-wrap:wrap}
+.btn{
+  font:inherit;font-size:14px;cursor:pointer;border-radius:10px;padding:10px 18px;
+  border:1px solid var(--line2);background:rgba(255,255,255,.03);color:var(--txt);
+  transition:.18s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+}
+.btn:hover{background:rgba(255,255,255,.07);border-color:var(--cy2);text-decoration:none}
+.btn.primary{background:linear-gradient(180deg,var(--cy),#0e9fb4);border-color:transparent;color:#04252b;font-weight:700}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent}
+.btn.done{background:rgba(52,211,153,.13);border-color:rgba(52,211,153,.4);color:var(--gr)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ---------- Lernkarten ---------- */
+.deck-bar{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 24px}
+.pill{
+  font:inherit;font-size:13px;padding:7px 14px;border-radius:99px;cursor:pointer;
+  border:1px solid var(--line2);background:transparent;color:var(--txt2);transition:.16s;
+}
+.pill:hover{border-color:var(--cy2);color:var(--txt)}
+.pill.active{background:var(--cydim);border-color:rgba(34,211,238,.45);color:var(--cy);font-weight:600}
+
+.flash-wrap{max-width:760px;margin:0 auto}
+.flash{
+  perspective:1400px;height:340px;cursor:pointer;margin-bottom:20px;
+}
+.flash-inner{
+  position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,.2,.2,1);
+  transform-style:preserve-3d;
+}
+.flash.flipped .flash-inner{transform:rotateY(180deg)}
+.flash-face{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:18px;padding:32px;display:flex;flex-direction:column;justify-content:center;
+  border:1px solid var(--line2);box-shadow:var(--shadow);overflow:auto;
+}
+.flash-front{
+  background:radial-gradient(500px 220px at 50% 0%,rgba(34,211,238,.13),transparent 70%),linear-gradient(180deg,#101821,#080c11);
+  text-align:center;align-items:center;
+}
+.flash-back{
+  transform:rotateY(180deg);
+  background:linear-gradient(180deg,#0d1a1d,#080c11);
+  border-color:rgba(34,211,238,.3);
+}
+.flash-tag{
+  position:absolute;top:16px;left:20px;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--txt3);
+}
+.flash-q{font-size:clamp(18px,2.4vw,24px);line-height:1.4;font-weight:600;max-width:34ch}
+.flash-a{font-size:15.5px;line-height:1.6;color:var(--txt2)}
+.flash-a b,.flash-a strong{color:var(--txt)}
+.flash-hint{
+  position:absolute;bottom:16px;left:0;right:0;text-align:center;
+  font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3);
+}
+.flash-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.flash-count{text-align:center;font-size:13px;color:var(--txt3);letter-spacing:.05em}
+
+/* ---------- Quiz ---------- */
+.quiz-shell{max-width:840px;margin:0 auto}
+.q{
+  background:linear-gradient(180deg,var(--card),var(--bg2));
+  border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;margin-bottom:16px;
+}
+.q-head{display:flex;gap:10px;align-items:baseline;margin-bottom:12px}
+.q-no{font-size:11.5px;color:var(--cy);letter-spacing:.1em;font-weight:700}
+.q-type{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);margin-left:auto;border:1px solid var(--line2);padding:2px 8px;border-radius:99px}
+.q-text{font-size:16px;line-height:1.5;margin-bottom:16px;color:var(--txt)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{
+  display:flex;gap:11px;align-items:flex-start;text-align:left;width:100%;
+  font:inherit;font-size:14.5px;padding:11px 14px;border-radius:10px;cursor:pointer;
+  border:1px solid var(--line);background:rgba(255,255,255,.02);color:var(--txt2);
+  transition:.15s;line-height:1.5;
+}
+.opt:hover:not(.locked){border-color:var(--cy2);color:var(--txt);background:rgba(34,211,238,.05)}
+.opt .box{
+  width:19px;height:19px;border-radius:5px;border:1px solid var(--line2);flex:none;
+  display:grid;place-items:center;font-size:11px;margin-top:1px;color:var(--txt3);
+}
+.opt.right{border-color:rgba(52,211,153,.55);background:rgba(52,211,153,.12);color:#d7fbe9}
+.opt.right .box{background:var(--gr);border-color:var(--gr);color:#04231a}
+.opt.wrong{border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.1);color:#fde2e2}
+.opt.wrong .box{background:var(--rd);border-color:var(--rd);color:#2b0a0a}
+.opt.locked{cursor:default}
+.feedback{
+  margin-top:15px;padding:14px 16px;border-radius:10px;font-size:14.5px;display:none;
+  border:1px solid var(--line2);background:rgba(255,255,255,.03);
+}
+.feedback.show{display:block;animation:fade .25s ease}
+.feedback.ok{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08)}
+.feedback.no{border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.08)}
+.feedback .verdict{font-weight:700;display:block;margin-bottom:7px;letter-spacing:.02em}
+.feedback.ok .verdict{color:var(--gr)}
+.feedback.no .verdict{color:var(--rd)}
+.feedback .sol{color:var(--txt);margin-bottom:6px}
+.feedback .src{font-size:13px;color:var(--txt3);border-left:2px solid var(--line2);padding-left:11px;margin-top:9px}
+.feedback .src b{color:var(--txt2);font-weight:600}
+textarea.open-answer{
+  width:100%;min-height:92px;resize:vertical;font:inherit;font-size:14.5px;
+  background:#0a0e13;border:1px solid var(--line2);border-radius:10px;
+  padding:12px 14px;color:var(--txt);margin-bottom:12px;line-height:1.55;
+}
+textarea.open-answer:focus{outline:none;border-color:var(--cy2)}
+.selfcheck{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.quiz-result{
+  text-align:center;padding:36px 24px;border:1px solid var(--line);border-radius:18px;
+  background:radial-gradient(500px 240px at 50% 0%,rgba(34,211,238,.12),transparent 70%),linear-gradient(180deg,#0d1218,#080c11);
+  margin-bottom:20px;
+}
+.quiz-result .big{font-size:52px;font-weight:800;color:var(--cy);line-height:1.1}
+.quiz-result .big small{font-size:20px;color:var(--txt3);font-weight:500}
+
+/* ---------- Suche ---------- */
+.search-box{position:relative;margin:22px 0 8px}
+.search-box input{
+  width:100%;font:inherit;font-size:17px;padding:15px 18px 15px 48px;
+  background:#0a0e13;border:1px solid var(--line2);border-radius:12px;color:var(--txt);
+}
+.search-box input:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
+.search-box .ico{position:absolute;left:17px;top:50%;transform:translateY(-50%);color:var(--txt3);font-size:17px}
+.hit{
+  border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px;
+  background:var(--card);cursor:pointer;transition:.16s;
+}
+.hit:hover{border-color:var(--cy2);transform:translateX(3px)}
+.hit .where{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--cy);margin-bottom:5px}
+.hit .snip{font-size:14.5px;color:var(--txt2);line-height:1.55}
+.hit mark{background:rgba(34,211,238,.28);color:#d8fbff;border-radius:3px;padding:0 2px}
+.empty{text-align:center;padding:46px 20px;color:var(--txt3);border:1px dashed var(--line2);border-radius:14px}
+
+/* ---------- Toast ---------- */
+#toast{
+  position:fixed;bottom:26px;left:50%;transform:translate(-50%,20px);
+  background:#0f1c22;border:1px solid rgba(34,211,238,.4);color:var(--cy);
+  padding:11px 20px;border-radius:99px;font-size:13.5px;letter-spacing:.02em;
+  opacity:0;pointer-events:none;transition:.28s;z-index:200;box-shadow:var(--shadow);
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- Fuß ---------- */
+footer{
+  border-top:1px solid var(--line);margin-top:40px;padding:26px 20px;
+  text-align:center;font-size:12.5px;color:var(--txt3);line-height:1.7;
+}
+
+/* ---------- Responsive ---------- */
+@media(max-width:720px){
+  main{padding:22px 14px 70px}
+  .hero{padding:24px 20px}
+  .page{padding:18px 16px}
+  .topbar-in{padding:9px 14px;gap:10px}
+  .brand b{font-size:13px}
+  nav.mainnav button{font-size:12.5px;padding:6px 10px}
+  .flash{height:400px}
+  .flash-face{padding:24px 20px}
+  h1{font-size:27px}
+  .statrow{gap:18px}
+  .chapnav{flex-direction:column}
+  .chapnav .btn{width:100%;justify-content:center}
+}
+@media print{
+  body{background:#fff;color:#111}
+  header.topbar,nav.mainnav,.chapnav,#toast{display:none}
+  .view{display:block!important}
+  .page,.card{background:#fff;border:1px solid #ccc;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand" onclick="go('home')">
+      <div class="mark">IH</div>
+      <div>
+        <b>Lernplattform</b>
+        <span>Instandhaltung · 10 Kapitel</span>
+      </div>
+    </div>
+    <nav class="mainnav" id="nav">
+      <button data-view="home" onclick="go('home')">Start</button>
+      <button data-view="cards" onclick="go('cards')">Lernkarten</button>
+      <button data-view="quiz" onclick="go('quiz')">Wissenstest</button>
+      <button data-view="search" onclick="go('search')">Suche</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="view" id="view-home"></div>
+  <div class="view" id="view-chapter"></div>
+  <div class="view" id="view-cards"></div>
+  <div class="view" id="view-quiz"></div>
+  <div class="view" id="view-search"></div>
+</main>
+
+<footer>
+  Lernplattform zur Vorlesung · Instandhaltung / Schwachstellenanalyse nach Prof. Dr. Mexis · DHBW Hochschule Mannheim<br>
+  Inhalte vollständig übernommen aus der Textübertragung der Folien (33 PDF-Seiten, 10 Kapitel).<br>
+  Lernfortschritt wird ausschließlich lokal im Browser gespeichert (LocalStorage) – keine Internetverbindung nötig.
+</footer>
+
+<div id="toast"></div>
+<script>
+/* =========================================================
+   INHALTSDATEN – Kapitel 1 bis 5
+   Quelle: folien_als_text_10_kapitel.txt (33 PDF-Seiten)
+   Text wörtlich übernommen, Reihenfolge unverändert.
+   ========================================================= */
+
+const CHAPTERS = [
+{
+  id: 1,
+  title: "Schwachstellenanalyse",
+  sub: "Methoden garantieren den Erfolg von technischen Analysen",
+  pages: [
+  { n: 1, t: "Schwachstellenanalyse nach Prof. Dr. Mexis", body: `
+    <p class="lead">Methoden garantieren den Erfolg von technischen Analysen</p>
+    <h5>Die drei Methoden</h5>
+    <ol>
+      <li>Frequentielle Arbeitskarten</li>
+      <li>Rundgangbasierte Inspektionen
+        <ul>
+          <li>RFID-Chip und Chipleser</li>
+          <li>Bar-Code Leser</li>
+        </ul>
+      </li>
+      <li>Schwerpunktaktionen</li>
+    </ol>
+    <h5>Beschriftungen an den Maschinenfotos</h5>
+    <ul>
+      <li>Abriebspuren</li>
+      <li>Anschlussstecker gebrochen</li>
+      <li>Zahnriemen kurz vor dem Reißen</li>
+    </ul>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Links und in der Mitte sind Fotos von Maschinenteilen und einer Produktionsanlage zu sehen. An drei Stellen sind typische Schwachstellen mit gelben Pfeilen und Beschriftungsfeldern markiert. Rechts werden die drei Methoden in einer nummerierten Übersicht gezeigt. Bei den rundgangbasierten Inspektionen sind ein mobiles Erfassungsgerät, ein RFID-Chip mit Chipleser und ein Bar-Code-Leser abgebildet. Bei den Schwerpunktaktionen sind zwei Fotos von Arbeiten an Maschinen zu sehen.</p>
+    </div>
+    <blockquote>„In der Verbrauchsgüterindustrie sind Schwachstellen eine ständige Herausforderung!“</blockquote>
+    <p class="small muted">Text am unteren Rand</p>
+  `},
+  { n: 2, t: "Zustandsorientierte Instandhaltung – Zusammenarbeit der Niveaus", body: `
+    <p>Will man mit Hilfe der „Zustandsorientierten Instandhaltung“ die Anlagenverfügbarkeit bis zum Limit ausreizen, ist es unumgänglich, dass alle Instandhaltungsniveaus eng zusammenarbeiten.</p>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung: Pyramide mit drei Ebenen</span>
+      <ul>
+        <li>Spitze: Expertenniveau</li>
+        <li>Mittlere Ebene: Instandhaltung Facharbeiterniveau</li>
+        <li>Untere Ebene: Instandhaltung Basisniveau</li>
+      </ul>
+    </div>
+  `},
+  { n: 3, t: "Die Kärtchenmethode", body: `
+    <p>Die Kärtchenmethode ermöglicht das Erkennen von Anomalien.</p>
+    <div class="def">
+      <span class="lbl">Definition · Anomalien</span>
+      <p>Anomalien sind Pannen, die heute erkennbar sind, aber erst in der Zukunft zu Ausfällen führen.</p>
+    </div>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Ein Foto einer Produktionsmaschine mit mehreren roten Karten. Die Stellen, an denen die Karten angebracht sind, sind mit orangefarbenen Ellipsen markiert. Rechts oben ist zusätzlich eine vergrößerte rote Karte abgebildet.</p>
+    </div>
+    <p class="footnote">DHBW Hochschule Mannheim – Handout V3</p>
+  `},
+  { n: 4, t: "Zustandsorientierte Instandsetzung – Die Umsetzung der Kärtchenmethode", body: `
+    <h5>Einführung in der Aktionswoche</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Aktion</th><th>Bedingung</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Definition der Schwerpunktanlage</td><td>Nur Engpassmaschinen sichern den Erfolg der Methode</td></tr>
+          <tr><td class="k">Aufstellung der Arbeitsgruppe</td><td>Produktion, Instandhaltung, Organisation, Qualität, Vorgesetzte</td></tr>
+          <tr><td class="k">Vorbereitung auf die Aktionswoche</td><td>Theoretische Schulung der Aktionsteilnehmer</td></tr>
+          <tr><td class="k">Ermitteln der Eingangssituation</td><td>Graphik der Parameter-Zieldefinition der Abteilungsleitung</td></tr>
+          <tr><td class="k">Aufhängen der roten Kärtchen</td><td>Bei laufender Maschine, bei stehender Maschine</td></tr>
+          <tr><td class="k">Verwaltung der gefundenen Anomalien</td><td>Gewichten nach Einflussart und Einflussgröße</td></tr>
+          <tr><td class="k">Abarbeitung der gefundenen Anomalien</td><td>Produktion: Sauberkeit und Ordnung.<br>Instandhaltung: Reparaturen und Modifikationen</td></tr>
+          <tr><td class="k">Restarbeiten</td><td>Erstellen eines Aktionsplans</td></tr>
+          <tr><td class="k">Präsentation</td><td>Die Einladung des Direktionsteams sichert den nachhaltigen Erfolg der Aktion</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h5>Übergang in die Nutzungsphase</h5>
+    <ul>
+      <li>An der Maschine</li>
+      <li>In der Werkstatt</li>
+      <li>Verwaltung roter Kärtchen</li>
+    </ul>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Rechts ist ein Ablaufdiagramm zur Verwaltung der roten Kärtchen dargestellt. Es enthält mehrere Prozesskästen, Entscheidungspunkte mit Ja-/Nein-Verzweigungen und Pfeile zwischen den Arbeitsschritten. Die kleinen Beschriftungen innerhalb der Kästen sind im Scan nicht durchgehend sicher lesbar.</p>
+    </div>
+    <div class="note info">
+      <span class="lbl">Text im grauen Feld</span>
+      <p>„Die strukturierte Verwaltung der roten Kärtchen sichert die zeitnahe Abarbeitung gemeldeter Anomalien.“</p>
+    </div>
+  `}
+  ]
+},
+
+{
+  id: 2,
+  title: "Inspektionskarte & Schadensursachenanalyse",
+  sub: "Technische Inspektionskarte, Schadensursachenanalyse, SPS-Zyklusanalyse",
+  pages: [
+  { n: 5, t: "Technische Inspektionskarte für die Maschinenführer (Niveau 1)", body: `
+    <div class="note">
+      <span class="lbl">Tipp</span>
+      <p>Man sollte sich nicht darauf verlassen, dass Maschinenführer Anomalien freiwillig melden, sondern man sollte sie gezielt an Schwachstellen heranführen!</p>
+    </div>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Die Folie zeigt eine technische Inspektionskarte für Maschinenführer. Am rechten Bildrand ist ein kleiner, angeschnittener Ausschnitt einer weiteren Tabelle bzw. eines Formulars sichtbar. Dessen Beschriftungen sind abgeschnitten und nicht vollständig lesbar.</p>
+    </div>
+  `},
+  { n: 6, t: "Schadensursachenanalyse oder die konsequente Beseitigung der Ausfallursachen", body: `
+    <p><strong>Eine korrekte Reparatur wäre wie folgt durchzuführen:</strong><br>Erst die Ausfallursache beseitigen, dann den Rest instand setzen.</p>
+    <p>Der gleiche Schaden tritt nach einer Reparatur früher auf als im Originalzustand, da das Umfeld geschwächt ist.</p>
+    <p><strong>Prüfen:</strong> Was hat den Schaden verursacht und was ist durch meinen Schaden zusätzlich noch in Mitleidenschaft gezogen worden.</p>
+    <h5>Schadensursachenanalyse – Evaluation abgetrennter Endstücke</h5>
+    <h5>Instandhaltungsverlauf Evaluationswagen</h5>
+    <ul>
+      <li>2003–2006: keine Pannen</li>
+      <li>2007 Februar bis Juni: 32 Bi-Metallauslösungen</li>
+      <li>2007 Juni: Kettenmotor gewechselt; Bi-Metall war zu hoch eingestellt</li>
+      <li>2007 Juni: 2 Bi-Metallauslösungen</li>
+      <li>2007 Juni: Lagerschaden Führungsrad</li>
+      <li>2008: 6 Pannen – teilweise gelockerte Radaufhängungen</li>
+      <li>2008 September: Führungsschiene gewechselt</li>
+    </ul>
+    <h5>Beschriftungen an der technischen Skizze</h5>
+    <ul>
+      <li>Blockiertes Rad</li>
+      <li>Bi-Metallauslösungen Antriebsmotor Kette</li>
+    </ul>
+    <h5>Ergebnisse Schadensursachenanalyse</h5>
+    <div class="grid cols-2">
+      <div class="figure">
+        <span class="lbl">Diagramm links</span>
+        <p>„Pannen pro 1000 Fertigungseinheiten“</p>
+        <p>Dargestellt sind Balken für die Jahre 2007, 2008, 2009 und 2010.</p>
+      </div>
+      <div class="figure">
+        <span class="lbl">Diagramm rechts</span>
+        <p>„Entwicklung Mittlere Instandsetzungszeit MRT“</p>
+        <p>Dargestellt sind Balken für die Jahre 2007, 2008, 2009 und 2010.</p>
+      </div>
+    </div>
+    <blockquote>„Bilder<br>Da der Maßnahmenschwerpunkt auf eine korrekte Abarbeitung der Pannenursache gelegt wurde, sinkt die Anzahl der Pannen und die Instandsetzungszeit steigt (jedoch nur vorübergehend).“</blockquote>
+    <p class="small muted">Text im unteren Bildfeld</p>
+    <p class="footnote">2015 Michael Wiesel – Praxiswissen Instandhaltung</p>
+  `},
+  { n: 7, t: "SPS-gestützte Zyklusanalyse „Fiktive Arbeitsmaschine“", body: `
+    <p>Mit fast allen SPS-Steuerungen lassen sich Anlagenzustände und Zykluszeiten erfassen</p>
+    <h5>Beschriftungen der Zeilen</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Zeile</th><th>Bezeichnung</th></tr></thead>
+        <tbody>
+          <tr><td class="k">1</td><td>Referenzzyklus</td></tr>
+          <tr><td class="k">2</td><td>gemessener Zyklus</td></tr>
+          <tr><td class="k">3</td><td>Referenz</td></tr>
+          <tr><td class="k">4</td><td>Arbeitsschritt 1</td></tr>
+          <tr><td class="k">5</td><td>Referenz</td></tr>
+          <tr><td class="k">6</td><td>Arbeitsschritt 2</td></tr>
+          <tr><td class="k">7</td><td>Referenz</td></tr>
+          <tr><td class="k">8</td><td>Arbeitsschritt 3</td></tr>
+          <tr><td class="k">9</td><td>Referenz</td></tr>
+          <tr><td class="k">10</td><td>Arbeitsschritt 4</td></tr>
+          <tr><td class="k">11</td><td>Referenz</td></tr>
+          <tr><td class="k">12</td><td>Arbeitsschritt 5</td></tr>
+          <tr><td class="k">13</td><td>Referenz</td></tr>
+          <tr><td class="k">14</td><td>Arbeitsschritt 6</td></tr>
+          <tr><td class="k">15</td><td>Referenz</td></tr>
+          <tr><td class="k">16</td><td>Arbeitsschritt 7</td></tr>
+          <tr><td class="k">17</td><td>Referenz</td></tr>
+          <tr><td class="k">18</td><td>Arbeitsschritt 8</td></tr>
+          <tr><td class="k">19</td><td>Referenz</td></tr>
+          <tr><td class="k">20</td><td>Arbeitsschritt 9</td></tr>
+          <tr><td class="k">21</td><td>Referenz</td></tr>
+          <tr><td class="k">22</td><td>Arbeitsschritt 10</td></tr>
+          <tr><td class="k">23</td><td>Referenz</td></tr>
+          <tr><td class="k">24</td><td>Arbeitsschritt 11</td></tr>
+          <tr><td class="k">25</td><td>Referenz</td></tr>
+          <tr><td class="k">26</td><td>Arbeitsschritt 12</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h5>Zahlenbeschriftungen im Diagramm</h5>
+    <p class="small muted">in der Reihenfolge der dargestellten Referenz- und Arbeitsschrittzeilen</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Zeile</th><th>Wert</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Referenzzyklus</td><td>11,25</td></tr>
+          <tr><td class="k">gemessener Zyklus</td><td>12,45</td></tr>
+          <tr><td class="k">weitere sichtbare Werte</td><td>2,82; 3,45; 2,87; 0,38; 3,33; 0,50; 2,93; 0,73; 3,48; 0,85; 3,75; 0,38; 4,4; 0,27; 3,75; 0,67; 4,45; 0,43; 4,80; 1,07; 5,15; 1,12; 4,65; 2,38; 5,11; 2,48; 5,90; 1,02; 6,31; 0,87; 7,08; 2,00; 7,65; 2,72; 9,71; 0,55; 10,80; 0,80; 10,35; 0,62; 11,66; 0,70; 10,53; 0,63; 11,75; 0,62</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Die waagerechte Achse ist mit 2,00; 4,00; 6,00; 8,00; 10,00 und 12,00 beschriftet. Blaue und grüne Balken stellen die einzelnen Zeitwerte dar. Ein Wert im oberen Bereich des Diagramms ist rot eingekreist.</p>
+    </div>
+    <p class="footnote">2015 Michael Wiesel – Praxiswissen Instandhaltung – DHBW Hochschule Mannheim – Handout V3</p>
+  `},
+  { n: 8, t: "Aufgabe", body: `
+    <p><strong>Aufgabe:</strong></p>
+    <p>Erkundigen Sie sich in Ihrem Betrieb nach einem realen Schadensverlauf, der durch eine Schadensursachenanalyse zu weniger Ausfall geführt hätte und arbeiten Sie diesen aus.</p>
+    <ul>
+      <li>Erste Anzeichen einer Panne</li>
+      <li>Folgeerscheinungen</li>
+      <li>Totalausfall</li>
+      <li>Schadensnachbetrachtung</li>
+    </ul>
+    <p>Wie hätte man diesen Ausfall frühzeitig minimieren können?</p>
+    <div class="note">
+      <span class="lbl">Aufgabe</span>
+      <p>Nennen Sie fünf Anomalien<br>(Bitte nicht die, die schon im Skript erwähnt wurden)</p>
+    </div>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Oben rechts ist eine kleine Comicfigur abgebildet.</p>
+    </div>
+  `}
+  ]
+},
+
+{
+  id: 3,
+  title: "Personalbedarf & Methodenniveau",
+  sub: "Personalbedarfsrechnung, Analysemethode, Prämiengrundmodelle",
+  pages: [
+  { n: 9, t: "Personalbedarfsrechnung in der Instandsetzung", body: `
+    <p class="lead">Ermittlung des jährlichen technischen Gesamtaufwands</p>
+    <h5>Obere Tabelle – Spaltenüberschriften</h5>
+    <ul>
+      <li>Anzahl Pannen je „X“ Stück (Wert branchenmäßig anpassen, z.B. 100 Fernsehgeräte)</li>
+      <li>Mittlere Instandsetzungszeit (statist. ermittelt)</li>
+      <li>Geplante Jahresproduktion (Wert aus Jahresplanung)</li>
+      <li>Anzahl Pannen pro Jahr</li>
+      <li>Sofort-Instandsetzung „D“ **</li>
+    </ul>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Zeile</th>
+            <th>Anzahl Pannen je „X“ Stück</th>
+            <th>Mittlere Instandsetzungszeit</th>
+            <th>Geplante Jahresproduktion</th>
+            <th>Anzahl Pannen pro Jahr</th>
+            <th>Sofort-Instandsetzung „D“ **</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="k">Fertigungseinheit</td>
+            <td>0,3</td><td>1,6 h</td><td>450000</td><td>1350</td><td>2160 h</td>
+          </tr>
+          <tr>
+            <td class="k">Zeile 2</td>
+            <td>1,1</td><td>0,8 h</td><td>730000</td><td>8030</td><td>6424 h</td>
+          </tr>
+          <tr>
+            <td class="k">Zeile 3</td>
+            <td>0,9</td><td>1,2 h</td><td>270000</td><td>2430</td><td>2916 h</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h5>Erläuterungen im gelben Feld</h5>
+    <div class="def">
+      <p>* „Mittlere Instandsetzungszeit“ MRT<br>MTTR + Nacharbeit + Stundenverbuchung</p>
+      <p>** „D“ = Anzahl Pannen / Bezugseinheit<br>× mittlere Instandsetzungszeit</p>
+      <p>*** „I+S+E“ = Aufwendungen für Inspektionen, systematische Wartung, geplante Instandsetzung / Bezugseinheit</p>
+    </div>
+    <h5>Untere Berechnung</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Position</th><th>Werte</th><th>Summe</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Sofort-Instandsetzung „D“ **</td><td>2160 h · 6424 h · 2916 h</td><td><strong>11500 h</strong></td></tr>
+          <tr><td class="k">Gewählte Strategie (angepasst an jeweilige Branche)</td><td>0,55 · 0,38 · 0,4</td><td>–</td></tr>
+          <tr><td class="k">Geplante Maßnahmen „I+S+E“ ***</td><td>1767 h · 10481 h · 4374 h</td><td><strong>16623 h</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note info">
+      <span class="lbl">Technische Supportfunktion</span>
+      <p>(Analysen, Modifikationen usw.; variiert je Branche)</p>
+      <p>5 % (geschätzt in % des Planbaren): <strong>831 h</strong></p>
+    </div>
+    <div class="def">
+      <span class="lbl">Technischer Gesamtaufwand</span>
+      <p><strong>28954 h</strong></p>
+    </div>
+    <h5>Weitere Beschriftungen</h5>
+    <ul>
+      <li>Indikatoren der Personalberechnung</li>
+      <li>Reale Personalberechnung</li>
+    </ul>
+  `},
+  { n: 10, t: "Analysemethode festlegen", body: `
+    <h5>Die fünf Arbeitsschritte</h5>
+    <ol>
+      <li><strong>Analysemethode festlegen</strong>
+        <ul>
+          <li>System vorbestimmter Zeiten (SVB) festlegen</li>
+          <li>Art des Methodenniveaus festlegen</li>
+        </ul>
+      </li>
+      <li><strong>Rahmen der Analyse festlegen</strong>
+        <ul>
+          <li>Arbeitsabläufe modular zerlegen</li>
+          <li>Wege zu lokalen Fixpunkten definieren</li>
+          <li>Fotodokumentation der Fachbegriffe</li>
+        </ul>
+      </li>
+      <li><strong>Analysen durchführen</strong>
+        <ul>
+          <li>Arbeitsdetailabläufe filmen</li>
+          <li>Arbeitselemente in TMU ermitteln</li>
+          <li>Ermittelte Zeiten in Sec umwandeln</li>
+        </ul>
+      </li>
+      <li><strong>Analysen auswerten</strong>
+        <ul>
+          <li>Modulare Abläufe zu Blockzeiten addieren</li>
+          <li>Blockzeiten prozentual bewerten</li>
+          <li>Gesamtmonatsbelastung ermitteln</li>
+        </ul>
+      </li>
+      <li><strong>Analyseergebnisse anwenden</strong>
+        <ul>
+          <li>Anzahl benötigter Mitarbeiter ermitteln</li>
+          <li>Kapazitätsgrenzen für Auftragsannahmen ermitteln</li>
+        </ul>
+      </li>
+    </ol>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Die fünf blauen Balken mit den jeweiligen Arbeitsschritten sind untereinander angeordnet und durch Pfeile verbunden. Die Darstellung zeigt die Reihenfolge von der Festlegung der Analysemethode bis zur Anwendung der Analyseergebnisse.</p>
+    </div>
+  `},
+  { n: 11, t: "Erklärung des Begriffs Methodenniveau", body: `
+    <p><strong>Analysemethode festlegen</strong></p>
+    <ul>
+      <li>System vorbestimmter Zeiten festlegen</li>
+      <li>Art des Methodenniveaus festlegen</li>
+    </ul>
+    <div class="note info">
+      <p><strong>Die Methode bestimmt die Zeit</strong></p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Niveautyp</th><th>Fertigung</th><th>Wiederholzeit</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Niveautyp 1</td><td>Großserienfertigung</td><td>~ 0,6 min</td></tr>
+          <tr><td class="k">Niveautyp 2</td><td>Kleinserienfertigung</td><td>&gt; 1–10 min</td></tr>
+          <tr><td class="k">Niveautyp 3</td><td>Einzelfertigung</td><td>&gt; 10 min – Tage</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `},
+  { n: 12, t: "Verschiedene Prämiengrundmodelle", body: `
+    <div class="figure">
+      <span class="lbl">Diagramm</span>
+      <p>Senkrechte Achse: Prämie [€] · Waagerechte Achse: Zielvorgabe</p>
+    </div>
+    <h5>Markierungen der Zielvorgabe</h5>
+    <ul><li>80 %</li><li>100 %</li><li>120 %</li></ul>
+    <h5>Markierungen der Prämie</h5>
+    <ul><li>50 %</li><li>70 %</li><li>100 %</li></ul>
+    <div class="def">
+      <span class="lbl">Erfüllungsmodell (rote Linie)</span>
+      <p>Die Linie beginnt bei 80 % Zielvorgabe und 0 % Prämie, steigt bis 100 % Zielvorgabe auf 70 % Prämie und steigt anschließend bis 120 % Zielvorgabe auf 100 % Prämie.</p>
+    </div>
+    <div class="def">
+      <span class="lbl">Leistungsmodell (blaue Linie)</span>
+      <p>Die Linie beginnt bei 100 % Zielvorgabe und 0 % Prämie und steigt bis 120 % Zielvorgabe auf 100 % Prämie. Die 50-%-Markierung liegt bei ungefähr 110 % Zielvorgabe.</p>
+    </div>
+  `}
+  ]
+},
+
+{
+  id: 4,
+  title: "Prämiensysteme & Fremdvergabe",
+  sub: "Leistungsprämiensysteme, Kernforderung der Fremdvergabe, Einsatzbereiche",
+  pages: [
+  { n: 13, t: "Sind Leistungsprämiensysteme sinnvoll?", body: `
+    <ul>
+      <li>Gute Prämiensysteme bringen Gewinn für alle Beteiligten.</li>
+      <li>Prämierte Indikatoren entwickeln sich überproportional. Somit eignen sich Prämiensysteme ideal als Steuerungsmittel.</li>
+      <li>Die starke Wirkung von Prämiensystemen kann aber auch negativ sein.</li>
+      <li>Für die Zahlung einer Prämie muss das Prinzip von Sportwettkämpfen gelten: Nur wenn das Spiel gewonnen wird, kann eine Siegprämie gezahlt werden.</li>
+      <li>Wählen Sie die Bedingungen für eine Prämienzahlung sorgfältig aus; denn Prämiensysteme lassen sich nur schwer wieder abschaffen.</li>
+      <li>Lassen Sie bei Nichterreichen der Prämienzahlung nur bedingt Ausnahmeregeln zu. Ausnahmesituationen werden schnell zur Regel.</li>
+    </ul>
+  `},
+  { n: 14, t: "Fremdvergaben", body: `
+    <h5>Kernforderung</h5>
+    <div class="def">
+      <span class="lbl">Kernforderung</span>
+      <p>In der modernen Instandhaltung (z.B. „lean-maintenance“ / Flexible Instandhaltung) wird angestrebt, sich nur auf das Wesentliche (z.B. die Wertschöpfungselemente) zu konzentrieren. Das könnte auch bedeuten, dass leicht ersetzbare Funktionen outgesourct oder fremd vergeben werden.</p>
+    </div>
+    <h5>Begriffe in der Darstellung</h5>
+    <ul>
+      <li>Kosten</li>
+      <li>Fachliche Kompetenzen</li>
+      <li>Produktbezogene Kompetenzen</li>
+      <li>Vertrauen</li>
+      <li>Flexibilität</li>
+    </ul>
+    <div class="note">
+      <span class="lbl">Frage</span>
+      <p>Und wie sollte man sich selbst positionieren?</p>
+    </div>
+    <p><strong>Fremdvergabe? „Ja“ – aber nicht um jeden Preis!</strong></p>
+    <div class="note warn">
+      <span class="lbl">Achtung</span>
+      <p>Verschiedenartige Instandhaltungskonzepte verlangen eine differenzierte Betrachtung.</p>
+    </div>
+  `},
+  { n: 15, t: "In diesen Bereichen sind Fremdvergaben häufig zu finden", body: `
+    <h5>Beschriftungen in der Darstellung</h5>
+    <ul>
+      <li>Integrierte Instandhaltung</li>
+      <li>Technische Serviceabteilungen</li>
+      <li>Technisches Personal</li>
+      <li>Sachverständige und Spezialisten</li>
+      <li>Ingenieurabteilung</li>
+      <li>Experten</li>
+    </ul>
+    <h5>Unterhalb der Darstellung</h5>
+    <ul>
+      <li>produktbezogene Kompetenzentwicklung</li>
+      <li>technische Kompetenzentwicklung</li>
+    </ul>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Links sind Bereiche der integrierten Instandhaltung und der technischen Serviceabteilungen mit schraffierten Rechtecken gezeigt. In den Rechtecken stehen „Technisches Personal“ sowie „Sachverständige und Spezialisten“. Rechts sind eine Ingenieurabteilung und zwei schmale, senkrechte Bereiche mit der Beschriftung „Experten“ zu sehen. Eine gestrichelte senkrechte Linie trennt die Darstellungsbereiche.</p>
+    </div>
+  `}
+  ]
+},
+
+{
+  id: 5,
+  title: "Dienstvertrag & Arbeitnehmerüberlassung",
+  sub: "Dienstvertrag, Service- und Wartungsverträge, Dreieckverhältnis",
+  pages: [
+  { n: 16, t: "Schnittmengen der Bereiche", body: `
+    <div class="figure">
+      <span class="lbl">Bilddarstellung mit drei sich überschneidenden Kreisen</span>
+      <ul>
+        <li>Produktion</li>
+        <li>Qualitätssicherung</li>
+        <li>Maschinenverfügbarkeit</li>
+      </ul>
+      <p>Die drei Kreise sind so angeordnet, dass sich alle drei Bereiche teilweise überschneiden.</p>
+    </div>
+  `},
+  { n: 17, t: "Der Dienstvertrag", body: `
+    <p>Arbeitnehmerüberlassung erfolgt in der Regel über einen Dienstvertrag.</p>
+    <h5>Dienstverträge zeigen folgende Merkmale</h5>
+    <ul>
+      <li>Der Dienstverpflichtete schuldet einen versprochenen Dienst.</li>
+      <li>Der Dienstberechtigte verpflichtet sich zur Entrichtung einer vereinbarten Vergütung.</li>
+      <li>Dienstverhältnisse haben keine zeitliche Begrenzung.</li>
+      <li>Die Beendigung eines Dienstvertrags erfolgt über eine Kündigung.</li>
+    </ul>
+    <p>Der bekannteste Dienstvertrag ist der Arbeitsvertrag.</p>
+    <div class="note warn">
+      <span class="lbl">Achtung</span>
+      <p>Der Dienstverpflichtete schuldet nur eine Leistung (Bemühen) aber keinen Erfolg.</p>
+      <p>Und nimmt der Dienstberechtigte eine vereinbarte Leistung nicht an, dann ist er trotzdem zu einer Vergütung (Bezahlung) verpflichtet.</p>
+    </div>
+    <p>Typische Dienstverträge sind medizinische Behandlungen, Dienste von Rechtsanwälten, Unterrichtsaufträge.</p>
+    <h5>Weitere Beispiele aus der Instandhaltung</h5>
+    <p>Es gibt Serviceverträge, die nur im Pannenfall eine Leistung vereinbaren. In der Regel sind das Experten- oder Ingenieurleistungen.<br>Typisches Beispiel wäre ein Servicevertrag mit 24h Verfügbarkeitsgarantieklausel.<br>Tritt ein in dieser Art abgesicherter Pannenfall nicht ein, so ist der Servicevertrag trotzdem je nach Vereinbarung ganz oder teilweise zu vergüten (Vergleiche hierzu auch das Prinzip eines Versicherungsvertrags).</p>
+    <div class="example">
+      <span class="lbl">Wartungsverträge</span>
+      <p>Wartungsverträge garantieren dem Auftraggeber eine definiert abrufbare Dienstleistung.</p>
+      <p>Wartungsverträge können eine Bedingung zur Erhaltung bzw. zur Verlängerung der Garantieleistungen sein: Typisches Beispiel: Die Mobilitätsgarantie der Autohersteller.</p>
+    </div>
+  `},
+  { n: 18, t: "Das Dreieckverhältnis der Arbeitnehmerüberlassung", body: `
+    <h5>Beteiligte</h5>
+    <ul>
+      <li>Verleiher / Zeitarbeitsunternehmen</li>
+      <li>Entleiher / Kunde</li>
+      <li>Leiharbeitnehmer</li>
+    </ul>
+    <h5>Beschriftungen der Pfeile und Verbindungen</h5>
+    <ul>
+      <li>Sichert Qualifikation des Leiharbeitnehmers</li>
+      <li>Zahlt für Arbeitsleistung</li>
+      <li>Arbeitsvertrag</li>
+      <li>Entlohnung</li>
+      <li>Gibt seine Arbeitskraft</li>
+      <li>Ist weisungsbefugt</li>
+      <li>Hat die Fürsorgepflicht</li>
+    </ul>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Die drei Beteiligten sind als Dreieck angeordnet. Oben befindet sich der Verleiher bzw. das Zeitarbeitsunternehmen, unten links der Entleiher bzw. Kunde und unten rechts der Leiharbeitnehmer. Zwischen den Beteiligten verlaufen farbige Pfeile mit den oben aufgeführten Beschriftungen.</p>
+    </div>
+  `}
+  ]
+}
+];
+
+</script>
+<script>
+/* =========================================================
+   INHALTSDATEN – Kapitel 6 bis 10
+   ========================================================= */
+
+CHAPTERS.push(
+{
+  id: 6,
+  title: "Werkvertrag, Lastenheft & Abnahme",
+  sub: "Werkvertrag, Vergütungsformen, Kostenvoranschlag, Lasten-/Pflichtenheft, Abnahme",
+  pages: [
+  { n: 19, t: "Der Werkvertrag", body: `
+    <p>Im Gegensatz zum Dienstvertrag ist beim Werkvertrag die Zahlung einer Vergütung immer an die Vollendung eines Werks gebunden.<br>Dabei müssen sowohl die Kriterien der Leistungsmessung, als auch die Art der Vergütung vorab vertraglich vereinbart werden.</p>
+    <h5>Typische Werkverträge sind</h5>
+    <ul>
+      <li>Erstellen einer Sachleistung</li>
+      <li>Instandsetzungsaufträge</li>
+      <li>Herstellung nicht körperlicher Werke (Konstruktionsleistungen, Programmieraufträge, Gutachten usw.)</li>
+    </ul>
+    <div class="example">
+      <span class="lbl">Einige Beispiele für Werkverträge</span>
+      <ul>
+        <li>Reparatur eines Unfallschadens</li>
+        <li>Anfertigen eines Hochzeitskleides</li>
+        <li>Installation einer Heizungsanlage</li>
+        <li>Gestalten eines neuen Firmenlogos</li>
+      </ul>
+    </div>
+    <h5>Vergütungsformen</h5>
+    <p>Typische Vergütungsformen sind:</p>
+    <ul>
+      <li>Vergütung nach Einheitspreisen, z.B. 12,- € pro m² verlegter Fliesen</li>
+      <li>Vergütung nach Zeitaufwand, z.B. Abrechnung einer Taxifahrt</li>
+      <li>Vergütung nach Pauschalpreis, z.B. 237,- € für das Wechseln eines Auspufftopfes</li>
+    </ul>
+    <h5>Anmerkung</h5>
+    <div class="note">
+      <span class="lbl">Anmerkung</span>
+      <p>Immer mehr Unternehmen wählen bei der Fremdvergabe statt einer Leiharbeit (Dienstvertrag) die Form des Werkvertrags. So wird zum einen das unternehmerische Risiko auf den Auftragnehmer abgewälzt, andererseits muss nur das bezahlt werden, was wirklich geleistet wurde.<br>Ein negativer Effekt ist, dass so auch die Mindestlohnbestimmung für Leiharbeit umgangen werden können.</p>
+    </div>
+    <h5>Der Kostenvoranschlag</h5>
+    <p>Der Kostenvoranschlag dient dem Auftragnehmer, die Kosten für seine Werkleistung zu kalkulieren.</p>
+    <p>Wird nichts Gegenteiliges vereinbart, ist der Kostenvoranschlag kein Bestandteil der Werkleistung und muss somit auch nicht bezahlt werden.</p>
+    <p>Werden die Kosten des Kostenvoranschlags für eine Werkleistung wesentlich überschritten, so hat der Auftragnehmer dieses frühzeitig mitzuteilen, damit der Auftraggeber die Chance hat, den Auftrag zu kündigen.</p>
+    <p>In diesem Fall hat der Auftragnehmer keinen Anspruch auf Bezahlung – ggf. ist nur ein Teilbetrag zu entlohnen.</p>
+  `},
+  { n: 20, t: "Lastenheft – Pflichtenheft", body: `
+    <ul>
+      <li>Damit ein Unternehmer oder ein Dienstleister einen Auftrag annehmen und erfüllen kann, muss der Bedarf vom Auftragsgeber (Kunde) präzise beschrieben werden. Dieses nennt man Lastenheft. Ein Lastenheft dokumentiert den Bedarf des Kunden.<br><span class="muted">(Lastenhefte sind in der Regel funktionell)</span></li>
+      <li>Ein Pflichtenheft ist die Umwandlung des Lastenhefts (durch den Auftragnehmer) in einen technisch realisierbaren Lösungsvorschlag. Nicht immer können alle Anforderungen des Auftraggebers (Kunde) vom Auftragnehmer (Lieferant) erfüllt werden.</li>
+      <li>Wird das Pflichtenheft vom Kunden akzeptiert, wird dieses zum Teil des Angebots und zum Bestandteil der Endabnahme.</li>
+    </ul>
+    <h5>Lastenhefte – Pflichtenhefte sollten folgende Inhalte haben</h5>
+    <ul>
+      <li>Detaillierte Beschreibung der geforderten Leistung</li>
+      <li>Höhe und Art der Entlohnung – sonstige Kosten (z.B. für Material)</li>
+      <li>Fertigstellungstermin</li>
+      <li>Gewährleistungen und Haftungsvereinbarungen</li>
+      <li>Vertragskündigungsklauseln</li>
+      <li>Nutzungsrechte</li>
+    </ul>
+  `},
+  { n: 21, t: "Die Abnahme – Der Abschluss eines Auftrags", body: `
+    <p>Jeder Auftrag (Werk) muss (nach BGB) mit einer Endabnahme abgeschlossen und vom Kunden akzeptiert werden.<br>Eine Endabnahme muss schriftlich durch Unterschrift erfolgen.</p>
+    <div class="note warn">
+      <span class="lbl">Achtung</span>
+      <p>Das vollständige Zahlen der Rechnung wird ebenfalls als Abnahme gewertet.</p>
+    </div>
+    <p>Eine Abnahme kann nicht ohne Grund verweigert werden. Wird die Abnahme eines Werks ohne Angabe von Gründen auch nach einer Fristsetzung nicht durchgeführt, kommt es zu einer fiktiven Abnahme und der Unternehmer kann seine vollständige Vergütung einfordern.</p>
+    <h5>Die rechtliche Seite der Abnahme</h5>
+    <div class="note warn">
+      <span class="lbl">Achtung</span>
+      <p>Die Abnahme eines „Werks“ hat weitreichende, rechtliche Folgen.</p>
+    </div>
+    <div class="def">
+      <span class="lbl">Umkehr der Beweislast</span>
+      <p>Bis zum Zeitpunkt der Abnahme muss der Auftragnehmer nachweisen, dass der Auftrag mängelfrei durchgeführt wurde.<br>Ab der Abnahme muss der Auftraggeber nachweisen, dass das „Werk“ Mängel aufweist.<br>Ausnahme: Wenn bei der Abnahme schriftliche Vorbehalte erklärt wurden.</p>
+    </div>
+    <p>Die Verjährungsfrist (Garantiezeit) beginnt mit dem Abnahmetermin zu laufen.</p>
+    <p class="footnote">2013 Michael Wiesel</p>
+  `}
+  ]
+},
+
+{
+  id: 7,
+  title: "Rechtliches Fremdvergabemanagement",
+  sub: "AÜG, Scheinselbstständigkeit, Übernahme von Fremdpersonal",
+  pages: [
+  { n: 22, t: "Die rechtliche Seite des Fremdvergabemanagements", body: `
+    <div class="note warn">
+      <span class="lbl">Achtung!</span>
+      <p>Wird ein Mitarbeiter einer Fremdfirma, der im Rahmen eines Werk- oder Dienstvertrags beauftragt wurde von einem Auftraggeber zu weiteren, nicht vertraglich vereinbarten Arbeiten oder Dienstleistungen herangezogen, so kann der Mitarbeiter der Fremdfirma auf Einstellung im Unternehmen des Auftraggebers bestehen. → Verstoß gegen das Arbeitnehmerüberlassungsgesetz AÜG.</p>
+      <p>Das gilt nicht bei Leiharbeit.</p>
+    </div>
+    <div class="def">
+      <span class="lbl">§16 AÜG</span>
+      <p>Illegale Arbeitnehmerüberlassung kann für Verleiher und Entleiher mit einer Geldbuße bis zu 25.000 € geahndet werden.</p>
+    </div>
+    <div class="note warn">
+      <span class="lbl">Achtung!</span>
+      <p>Wird ein Ausländer ohne Aufenthalts- oder Arbeitserlaubnis im eigenen Unternehmen beschäftigt, so kann das mit einer Geldbuße von bis zu 500.000 € oder einer Haftstrafe geahndet werden.<br>Das gilt auch, wenn man eine Fremdfirma beauftragt, die gegen das Aufenthaltsgesetz verstößt.</p>
+    </div>
+    <div class="note info">
+      <span class="lbl">Prüfungspflicht</span>
+      <p>Es gilt hier die Prüfungspflicht – d.h.: Ich muss mich davon überzeugen, dass mein Auftragnehmer (Fremdunternehmen) sich an das Gesetz hält.</p>
+    </div>
+  `},
+  { n: 23, t: "Wann spricht man von Scheinselbstständigkeit?", body: `
+    <p>Man kann vom Tatbestand der Scheinselbstständigkeit ausgehen, wenn mindestens drei der folgenden fünf Kriterien zutreffen.<br><span class="muted">(Quelle: Wikipedia)</span></p>
+    <ol>
+      <li>Der Selbstständige erwirtschaftet mehr als 80% des Umsatzes nur bei einem einzigen Auftraggeber.</li>
+      <li>Der Auftraggeber lässt die gleichen Tätigkeiten auch durch seine nichtselbstständigen Mitarbeiter verrichten.</li>
+      <li>Die Tätigkeit entspricht in etwa der Tätigkeit, die der Selbstständige zuvor für den Auftraggeber als dessen Mitarbeiter ausgeübt hatte.</li>
+      <li>Der Selbstständige lässt keine unternehmertypischen Merkmale erkennen.</li>
+      <li>Der Selbstständige beschäftigt keine sozialversicherungspflichtigen Mitarbeiter.</li>
+    </ol>
+    <h5>Stellen Sie sich immer die grundlegende Frage</h5>
+    <div class="note info">
+      <p>Ist ein Auftragnehmer in der Lage, frei zu entscheiden, einen Auftrag anzunehmen oder abzulehnen?</p>
+    </div>
+    <div class="note">
+      <span class="lbl">Übrigens</span>
+      <p>Wenn eine Scheinselbstständigkeit aufgebaut wird, um das Steuergesetz zu umgehen, dann spricht man von Schwarzarbeit.</p>
+    </div>
+  `},
+  { n: 24, t: "Tipp: Übernahme von Fremdpersonal", body: `
+    <div class="note">
+      <span class="lbl">Tipp</span>
+      <p>Mitarbeiter einer von mir beauftragten Fremdfirmen können nur mit sehr großen Schwierigkeiten z.B. durch Abwerbung als eigene Mitarbeiter übernommen werden. Das ist in der Regel vertraglich ausgeschlossen oder führt zum Vertrauensbruch.</p>
+    </div>
+    <p>Mitarbeiter einer Personalverleihfirma können problemloser als eigene Mitarbeiter dauerhaft übernommen werden.<br>Das ist legal und akzeptabel.<br>In diesem Fall wird die Personalverleihfirma zum Personalvermittler und erhebt eine Provision.<br><span class="muted">(In der Regel entspricht diese einem dreifachen Monatslohn des übernommenen Mitarbeiters.)</span></p>
+  `}
+  ]
+},
+
+{
+  id: 8,
+  title: "Arbeitssicherheit & Gefährdungsbeurteilung",
+  sub: "BGV/GUV, Gefährdungsbeurteilung A und B",
+  pages: [
+  { n: 25, t: "Leere Seite", body: `
+    <div class="note info">
+      <span class="lbl">Hinweis zur Übertragung</span>
+      <p>Leere Seite – auf der PDF-Seite ist kein Text und keine Darstellung erkennbar.</p>
+    </div>
+  `},
+  { n: 26, t: "Berufsgenossenschaftliche Vorschriften für Arbeitssicherheit und Gesundheitsschutz", body: `
+    <p class="small muted">(Quelle BG und Wikipedia)</p>
+    <div class="def">
+      <span class="lbl">BGV (GUV) · früher UVV – Unfallverhütungsvorschriften</span>
+      <p>Berufsgenossenschaftliche Vorschriften für Arbeitssicherheit und Gesundheitsschutz</p>
+    </div>
+    <ul>
+      <li>Die Unfallverhütungsvorschriften legen für jedes gewerbetreibende Unternehmen in Deutschland verbindliche Pflichten für den Unfall- und Gesundheitsschutz am Arbeitsplatz fest.</li>
+      <li>Die BGV wird von der BG erstellt und muss vom Arbeitsministerium genehmigt werden. Dadurch haben die BGV Gesetzescharakter.</li>
+      <li>Die BGV schreibt vor, welche Einrichtungen und Maßnahmen getroffen werden müssen, um Unfälle und Berufskrankheiten zu verhindern.</li>
+      <li>Die BGV schreibt vor, wie sich die Versicherten zu verhalten haben, um Unfälle und Berufskrankheiten zu vermeiden.</li>
+      <li>Die BGV schreibt den Unternehmen vor, welche und wie viele Sicherheitsfachkräfte, Sicherheitsbeauftragte, Ersthelfer und Ärzte einzusetzen sind und welche arbeitsmedizinischen Vorbeugemaßnahmen erforderlich sind.</li>
+    </ul>
+  `},
+  { n: 27, t: "Gefährdungsbeurteilung", body: `
+    <p>Die neue BGV schreibt bei allen Tätigkeiten am Arbeitsplatz eine Gefährdungsbeurteilung vor.</p>
+    <div class="note info">
+      <span class="lbl">Text im grauen Feld</span>
+      <p>Je nach Art und Umfang der Tätigkeiten, sowie entsprechend der Ergebnisse der Gefährdungsbeurteilung gestaltet sich die daraus resultierende vorbeugende Maßnahme.<br>Z.B. der Einsatz eines Koordinators, eine projektbezogene Unterweisung oder eine jährliche Sicherheitsunterweisung bei Routinetätigkeiten.</p>
+    </div>
+    <h5>Schnelle Gefährdungsbeurteilung</h5>
+    <div class="figure">
+      <span class="lbl">Beschriftung im grauen Feld</span>
+      <p>Feld für die Dokumentation einer „Ereignisbezogenen Sicherheitsunterweisung“</p>
+    </div>
+    <h5>Gefährdungsbeurteilungen</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Form</th><th>Geltungsbereich</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Gefährdungsbeurteilung A</td><td>Für Arbeiten &lt; 24 h und maximal einer Fremdfirma</td></tr>
+          <tr><td class="k">Gefährdungsbeurteilung B</td><td>Für Arbeiten &gt; 24 h oder beim Arbeiten mehrerer Firmen</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <span class="lbl">Tipp</span>
+      <p>Lassen Sie sich von allen Beteiligten die Teilnahme an der Sicherheitsunterweisung schriftlich bestätigen und archivieren Sie die Originale.</p>
+    </div>
+    <div class="note info">
+      <span class="lbl">Text im unteren grauen Feld</span>
+      <p>Es liegt im Ermessen des Projektverantwortlichen je nach Gefährdungspotential einen SiGeKo oder einen Fremdfirmenkoordinator einzuberufen.<br><span class="muted">(Keine gesetzliche Verpflichtung – der letzte Zusatz ist im Scan nicht vollständig lesbar.)</span></p>
+    </div>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Mehrere Formulare und Beispiele für Gefährdungsbeurteilungen sind abgebildet. Ein Formular trägt die Bezeichnung „Gefährdungsbeurteilung A“, ein weiteres „Gefährdungsbeurteilung B“. Daneben ist eine „Schnelle Gefährdungsbeurteilung“ mit einem markierten Feld für die Dokumentation dargestellt.</p>
+    </div>
+  `}
+  ]
+},
+
+{
+  id: 9,
+  title: "SiGeKo & Sicherheitsunterweisungen",
+  sub: "Sicherheits- und Gesundheitsschutzkoordinator, Unterweisungsarten",
+  pages: [
+  { n: 28, t: "Der Sicherheits- und Gesundheitsschutzkoordinator SiGeKo", body: `
+    <p class="lead">SiGeKo (früher Baustellenkoordinator)</p>
+    <p><strong>Bestellung durch Projektverantwortlichen</strong><br><span class="muted">(gesetzlich vorgeschrieben nur bei Bautätigkeiten)</span></p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Entscheidungskriterien für die Einberufung eines SiGeKo</th><th>Beispiele bei Wartungs- oder Instandsetzungsmaßnahmen</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="k">Dauer der technischen Maßnahmen</td><td>z.B. länger als 500 MA-Tage oder 30 Arbeitstage</td></tr>
+          <tr><td class="k">Anzahl beteiligter Mitarbeiter</td><td>z.B. &gt; 20 pro Schicht</td></tr>
+          <tr><td class="k">Anzahl beteiligter Unternehmen</td><td>z.B. mehrere Arbeitgeber</td></tr>
+          <tr><td class="k">Arbeiten auf verschiedenen Ebenen</td><td>z.B. auf drei offenen Ebenen übereinander</td></tr>
+          <tr><td class="k">Besondere Gefährdungen resultierend aus der Gefährdungsanalyse</td><td>Gefährliche Stoffe, gefährliche Anlagen</td></tr>
+          <tr><td class="k">Gemeinsame Nutzung von Arbeitsmitteln</td><td>z.B. Gabelstapler oder Kräne</td></tr>
+          <tr><td class="k">u.v.a.</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note warn">
+      <span class="lbl">Achtung</span>
+      <p>Auf einer Baustelle stehen die Weisungsbefugnisse eines SiGeKo über hierarchischen Befugnissen.</p>
+    </div>
+  `},
+  { n: 29, t: "Weisungsbefugnis gegenüber Fremdfirmen", body: `
+    <div class="note warn">
+      <span class="lbl">Achtung</span>
+      <p>Das Weisungsbefugnis gegenüber einer FF bezieht sich nur auf vertraglich vereinbarte Verhaltensregeln im Hause des Auftraggebers. (Hausrecht)</p>
+    </div>
+  `},
+  { n: 30, t: "Sicherheitsunterweisungen", body: `
+    <h5>Übersicht „Sicherheitsunterweisungen“</h5>
+    <ul>
+      <li>Jährliche Sicherheitsunterweisung</li>
+      <li>Fremdfirmeneinweisung</li>
+      <li>Ereignisbezogene Unterweisung (z.B. nach einer Gefährdungsbeurteilung)</li>
+    </ul>
+    <div class="note warn">
+      <span class="lbl">Achtung</span>
+      <p>Externes Personal kennt nicht die versteckten Gefahren.</p>
+    </div>
+    <h5>Die jährliche Sicherheitsunterweisung</h5>
+    <p><strong>Verpflichtend für alle Mitarbeiter durch deren Vorgesetzte</strong></p>
+    <ul>
+      <li>Die Sicherheitsunterweisung soll jährlich erfolgen.</li>
+      <li>Die Themen sind frei definierbar, sollen aber im Bezug zur täglichen Arbeit stehen.</li>
+      <li>Die Mitarbeiter sind zur aktiven Teilnahme verpflichtet – nur durchlesen geht nicht.</li>
+      <li>Tipp: Eine Unterschrift als Teilnahmebestätigung ist nicht vorgeschrieben; erleichtert aber eine spätere Nachweisführung.</li>
+    </ul>
+    <h5>Die Sicherheitsunterweisung für Fremdfirmen</h5>
+    <p>Die MA der Fremdfirmen müssen aktiv an der Einweisung teilnehmen. Nur das Dokument aushändigen ist nicht akzeptabel.</p>
+    <p>Die Einweisung der Fremdfirmen muss in einer Sprache erfolgen, die den MA vertraut ist. Ggf. Dolmetscher hinzuziehen.</p>
+    <div class="note">
+      <span class="lbl">Tipp</span>
+      <p>Lassen Sie sich die Teilnahme an der Sicherheitsunterweisung von jedem MA unterschreiben und händigen Sie eine Kopie der Dokumente aus.</p>
+    </div>
+    <div class="examples">
+    <div class="example">
+      <span class="lbl">Text auf dem abgebildeten Poster</span>
+      <ul>
+        <li>Unser Ziel: Null Unfälle</li>
+        <li>Unser Weg: Null Risiko</li>
+      </ul>
+      <p>„Wir möchten, dass wir abends genauso gesund nach Hause gehen, wie wir morgens gekommen sind.“</p>
+    </div>
+    </div>
+  `}
+  ]
+},
+
+{
+  id: 10,
+  title: "Gefahrenpotentiale & Arbeitssicherheit",
+  sub: "Betriebsanweisungen, Erlaubnisscheine, Kosten der Arbeitssicherheit, LoTo",
+  pages: [
+  { n: 31, t: "Gefahrenpotentiale darstellen", body: `
+    <h5>Die Betriebsanweisungen</h5>
+    <div class="note info">
+      <p>Blau für Maschinen und Anlagen</p>
+    </div>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Links ist ein Beispiel einer Betriebsanweisung mit Sicherheits- und Gefahrensymbolen sowie farbigen Kennzeichnungen abgebildet. Der kleingedruckte Inhalt des Formulars ist im Scan nicht sicher lesbar.</p>
+    </div>
+    <h5>Die Erlaubnisscheine</h5>
+    <ul>
+      <li>Feuererlaubnis für Schweiß und Trennarbeiten</li>
+      <li>Befahrerlaubnis für Behälter, Gruben und Gräben</li>
+      <li>Gerüstzulassung durch befähigte Person</li>
+    </ul>
+    <p>Dazu gehört auch die Arbeitsanmeldung.</p>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Neben den Beschriftungen sind mehrere Erlaubnisschein-Formulare abgebildet. Daneben ist ein Foto einer an einer Anlage angebrachten Kennzeichnung zu sehen. Unten rechts ist ein Formular mit der Überschrift „Arbeitsanmeldung“ dargestellt.</p>
+    </div>
+  `},
+  { n: 32, t: "Was kostet Arbeitssicherheit?", body: `
+    <h5>Oberes Diagramm</h5>
+    <p>Dargestellte Kostenarten:</p>
+    <ul>
+      <li>Gesamtkosten Arbeitssicherheit</li>
+      <li>Beitragskosten BG (Unfälle)</li>
+      <li>Technische Kosten</li>
+      <li>Kosten durch Mitarbeiterausfall</li>
+      <li>Organisatorische Kosten</li>
+    </ul>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Die Grafik zeigt fünf farblich unterschiedliche Linien. Eine senkrechte Markierung kennzeichnet den „Beginn der Sicherheitsmaßnahmen“.</p>
+    </div>
+    <h5>Unteres Diagramm – Meldepflichtige Unfälle</h5>
+    <ul>
+      <li>Legende: Anzahl</li>
+      <li>Waagerechte Achse: Jahre 2000 bis 2010</li>
+      <li>Senkrechte Achse: Anzahl, Skala von 0 bis 60</li>
+    </ul>
+    <div class="figure">
+      <span class="lbl">Bilddarstellung</span>
+      <p>Die Balken für die Jahre 2000 bis 2003 liegen ungefähr zwischen 45 und 52. Ab 2004 sind deutlich niedrigere Balken dargestellt. Eine rote Pfeilmarkierung zeigt auf den Balken für 2004. Die folgenden Balken reichen bis zum Jahr 2010 und liegen nahe bei null.</p>
+    </div>
+    <div class="note info">
+      <span class="lbl">Beschriftung im grünen Feld</span>
+      <p>Begriff: Meldepflichtige Unfälle</p>
+    </div>
+    <div class="note info">
+      <span class="lbl">Text im grauen Feld</span>
+      <p>Reales Beispiel:<br>Einführung einer bedingungslosen Sicherheitskultur</p>
+    </div>
+  `},
+  { n: 33, t: "LoTo*", body: `
+    <p class="lead">LoTo*</p>
+    <p><strong>*Lock out - Tag out</strong><br>Absperren – Kennzeichnen</p>
+    <div class="def">
+      <span class="lbl">LoTo</span>
+      <p>„Beherrschung gefährlicher Energien an Maschinen und Anlagen“<br>bei Eingriffen der Instandhaltung oder von Serviceteams</p>
+    </div>
+  `}
+  ]
+}
+);
+
+</script>
+<script>
+/* =========================================================
+   LERNKARTEN & WISSENSTEST
+   Alle Antworten stammen ausschließlich aus den Folien.
+   ========================================================= */
+
+const FLASHCARDS = [
+/* Kapitel 1 */
+{c:1,q:"Welche drei Methoden garantieren den Erfolg von technischen Analysen?",a:"1. Frequentielle Arbeitskarten<br>2. Rundgangbasierte Inspektionen (RFID-Chip und Chipleser, Bar-Code Leser)<br>3. Schwerpunktaktionen"},
+{c:1,q:"Wie sind Anomalien definiert?",a:"Anomalien sind Pannen, die heute erkennbar sind, aber erst in der Zukunft zu Ausfällen führen."},
+{c:1,q:"Welche drei Schwachstellen sind an den Maschinenfotos markiert?",a:"Abriebspuren · Anschlussstecker gebrochen · Zahnriemen kurz vor dem Reißen"},
+{c:1,q:"Welche drei Ebenen hat die Pyramide der zustandsorientierten Instandhaltung?",a:"Spitze: Expertenniveau<br>Mittlere Ebene: Instandhaltung Facharbeiterniveau<br>Untere Ebene: Instandhaltung Basisniveau"},
+{c:1,q:"Welche Bedingung gilt für die Definition der Schwerpunktanlage?",a:"Nur Engpassmaschinen sichern den Erfolg der Methode."},
+{c:1,q:"Wer bildet die Arbeitsgruppe der Aktionswoche?",a:"Produktion, Instandhaltung, Organisation, Qualität, Vorgesetzte"},
+{c:1,q:"Was sichert die zeitnahe Abarbeitung gemeldeter Anomalien?",a:"Die strukturierte Verwaltung der roten Kärtchen."},
+{c:1,q:"Welche drei Bereiche gehören zum Übergang in die Nutzungsphase?",a:"An der Maschine · In der Werkstatt · Verwaltung roter Kärtchen"},
+
+/* Kapitel 2 */
+{c:2,q:"Wie wäre eine korrekte Reparatur durchzuführen?",a:"Erst die Ausfallursache beseitigen, dann den Rest instand setzen."},
+{c:2,q:"Warum tritt der gleiche Schaden nach einer Reparatur früher auf als im Originalzustand?",a:"Da das Umfeld geschwächt ist."},
+{c:2,q:"Was ist beim Schaden zu prüfen?",a:"Was hat den Schaden verursacht und was ist durch meinen Schaden zusätzlich noch in Mitleidenschaft gezogen worden."},
+{c:2,q:"Welcher Tipp gilt für die technische Inspektionskarte der Maschinenführer (Niveau 1)?",a:"Man sollte sich nicht darauf verlassen, dass Maschinenführer Anomalien freiwillig melden, sondern man sollte sie gezielt an Schwachstellen heranführen!"},
+{c:2,q:"Welches Ergebnis zeigt die Schadensursachenanalyse in den Diagrammen?",a:"Da der Maßnahmenschwerpunkt auf eine korrekte Abarbeitung der Pannenursache gelegt wurde, sinkt die Anzahl der Pannen und die Instandsetzungszeit steigt (jedoch nur vorübergehend)."},
+{c:2,q:"Welche Werte haben Referenzzyklus und gemessener Zyklus?",a:"Referenzzyklus: 11,25<br>gemessener Zyklus: 12,45"},
+{c:2,q:"Was lässt sich mit fast allen SPS-Steuerungen erfassen?",a:"Anlagenzustände und Zykluszeiten."},
+{c:2,q:"Instandhaltungsverlauf Evaluationswagen: Was geschah 2007 Februar bis Juni?",a:"32 Bi-Metallauslösungen"},
+
+/* Kapitel 3 */
+{c:3,q:"Woraus setzt sich die Mittlere Instandsetzungszeit MRT zusammen?",a:"MTTR + Nacharbeit + Stundenverbuchung"},
+{c:3,q:"Wie berechnet sich die Sofort-Instandsetzung „D“?",a:"„D“ = Anzahl Pannen / Bezugseinheit × mittlere Instandsetzungszeit"},
+{c:3,q:"Was bedeutet „I+S+E“?",a:"Aufwendungen für Inspektionen, systematische Wartung, geplante Instandsetzung / Bezugseinheit"},
+{c:3,q:"Wie hoch ist der technische Gesamtaufwand im Rechenbeispiel?",a:"28954 h (Summe „D“ 11500 h + „I+S+E“ 16623 h + Technische Supportfunktion 831 h)"},
+{c:3,q:"Welche fünf Arbeitsschritte umfasst die Analysemethode?",a:"1. Analysemethode festlegen<br>2. Rahmen der Analyse festlegen<br>3. Analysen durchführen<br>4. Analysen auswerten<br>5. Analyseergebnisse anwenden"},
+{c:3,q:"Was kennzeichnet Niveautyp 1?",a:"Großserienfertigung, Wiederholzeit ~ 0,6 min"},
+{c:3,q:"Was kennzeichnen Niveautyp 2 und Niveautyp 3?",a:"Niveautyp 2: Kleinserienfertigung (Wiederholzeit &gt; 1–10 min)<br>Niveautyp 3: Einzelfertigung (Wiederholzeit &gt; 10 min – Tage)"},
+{c:3,q:"Was bestimmt beim Methodenniveau die Zeit?",a:"Die Methode bestimmt die Zeit."},
+{c:3,q:"Wie verläuft das Erfüllungsmodell im Prämiendiagramm?",a:"Rote Linie: beginnt bei 80 % Zielvorgabe und 0 % Prämie, steigt bis 100 % Zielvorgabe auf 70 % Prämie und anschließend bis 120 % Zielvorgabe auf 100 % Prämie."},
+{c:3,q:"Wie verläuft das Leistungsmodell im Prämiendiagramm?",a:"Blaue Linie: beginnt bei 100 % Zielvorgabe und 0 % Prämie, steigt bis 120 % Zielvorgabe auf 100 % Prämie. Die 50-%-Markierung liegt bei ungefähr 110 % Zielvorgabe."},
+
+/* Kapitel 4 */
+{c:4,q:"Warum eignen sich Prämiensysteme ideal als Steuerungsmittel?",a:"Prämierte Indikatoren entwickeln sich überproportional."},
+{c:4,q:"Welches Prinzip muss für die Zahlung einer Prämie gelten?",a:"Das Prinzip von Sportwettkämpfen: Nur wenn das Spiel gewonnen wird, kann eine Siegprämie gezahlt werden."},
+{c:4,q:"Warum sind Ausnahmeregeln bei Nichterreichen problematisch?",a:"Ausnahmesituationen werden schnell zur Regel."},
+{c:4,q:"Was ist die Kernforderung der modernen Instandhaltung bei Fremdvergaben?",a:"Sich nur auf das Wesentliche (z.B. die Wertschöpfungselemente) zu konzentrieren; leicht ersetzbare Funktionen können outgesourct oder fremd vergeben werden."},
+{c:4,q:"Welche fünf Begriffe stehen in der Darstellung zur Fremdvergabe?",a:"Kosten · Fachliche Kompetenzen · Produktbezogene Kompetenzen · Vertrauen · Flexibilität"},
+{c:4,q:"In welchen Bereichen sind Fremdvergaben häufig zu finden?",a:"Integrierte Instandhaltung · Technische Serviceabteilungen · Technisches Personal · Sachverständige und Spezialisten · Ingenieurabteilung · Experten"},
+{c:4,q:"Wie lautet die Antwort auf die Frage „Fremdvergabe?“",a:"„Ja“ – aber nicht um jeden Preis!"},
+{c:4,q:"Gute Prämiensysteme – welche Wirkung haben sie?",a:"Gute Prämiensysteme bringen Gewinn für alle Beteiligten. Die starke Wirkung kann aber auch negativ sein."},
+
+/* Kapitel 5 */
+{c:5,q:"Welche vier Merkmale zeigen Dienstverträge?",a:"Der Dienstverpflichtete schuldet einen versprochenen Dienst.<br>Der Dienstberechtigte verpflichtet sich zur Entrichtung einer vereinbarten Vergütung.<br>Dienstverhältnisse haben keine zeitliche Begrenzung.<br>Die Beendigung erfolgt über eine Kündigung."},
+{c:5,q:"Was schuldet der Dienstverpflichtete?",a:"Nur eine Leistung (Bemühen), aber keinen Erfolg."},
+{c:5,q:"Welcher ist der bekannteste Dienstvertrag?",a:"Der Arbeitsvertrag."},
+{c:5,q:"Nennen Sie typische Dienstverträge.",a:"Medizinische Behandlungen, Dienste von Rechtsanwälten, Unterrichtsaufträge."},
+{c:5,q:"Was gilt, wenn ein Pannenfall trotz Servicevertrag mit 24h Verfügbarkeitsgarantieklausel nicht eintritt?",a:"Der Servicevertrag ist trotzdem je nach Vereinbarung ganz oder teilweise zu vergüten (Prinzip eines Versicherungsvertrags)."},
+{c:5,q:"Was garantieren Wartungsverträge?",a:"Dem Auftraggeber eine definiert abrufbare Dienstleistung. Sie können Bedingung zur Erhaltung bzw. Verlängerung der Garantieleistungen sein (z.B. Mobilitätsgarantie der Autohersteller)."},
+{c:5,q:"Welche drei Beteiligten hat das Dreieckverhältnis der Arbeitnehmerüberlassung?",a:"Verleiher / Zeitarbeitsunternehmen · Entleiher / Kunde · Leiharbeitnehmer"},
+{c:5,q:"Welche drei Bereiche überschneiden sich in der Darstellung mit den drei Kreisen?",a:"Produktion · Qualitätssicherung · Maschinenverfügbarkeit"},
+
+/* Kapitel 6 */
+{c:6,q:"Wodurch unterscheidet sich der Werkvertrag vom Dienstvertrag?",a:"Beim Werkvertrag ist die Zahlung einer Vergütung immer an die Vollendung eines Werks gebunden. Kriterien der Leistungsmessung und Art der Vergütung müssen vorab vereinbart werden."},
+{c:6,q:"Nennen Sie die drei typischen Vergütungsformen mit Beispiel.",a:"Nach Einheitspreisen (12,- € pro m² verlegter Fliesen) · nach Zeitaufwand (Abrechnung einer Taxifahrt) · nach Pauschalpreis (237,- € für das Wechseln eines Auspufftopfes)"},
+{c:6,q:"Wozu dient der Kostenvoranschlag und muss er bezahlt werden?",a:"Er dient dem Auftragnehmer, die Kosten für seine Werkleistung zu kalkulieren. Ohne gegenteilige Vereinbarung ist er kein Bestandteil der Werkleistung und muss nicht bezahlt werden."},
+{c:6,q:"Was gilt bei wesentlicher Überschreitung des Kostenvoranschlags?",a:"Der Auftragnehmer hat dies frühzeitig mitzuteilen, damit der Auftraggeber den Auftrag kündigen kann. Es besteht kein Anspruch auf Bezahlung – ggf. ist nur ein Teilbetrag zu entlohnen."},
+{c:6,q:"Was ist ein Lastenheft?",a:"Die präzise Beschreibung des Bedarfs durch den Auftragsgeber (Kunde). Ein Lastenheft dokumentiert den Bedarf des Kunden (in der Regel funktionell)."},
+{c:6,q:"Was ist ein Pflichtenheft?",a:"Die Umwandlung des Lastenhefts durch den Auftragnehmer in einen technisch realisierbaren Lösungsvorschlag. Wird es akzeptiert, wird es Teil des Angebots und Bestandteil der Endabnahme."},
+{c:6,q:"Welche sechs Inhalte sollten Lasten- und Pflichtenhefte haben?",a:"Detaillierte Beschreibung der geforderten Leistung · Höhe und Art der Entlohnung – sonstige Kosten · Fertigstellungstermin · Gewährleistungen und Haftungsvereinbarungen · Vertragskündigungsklauseln · Nutzungsrechte"},
+{c:6,q:"Wie muss eine Endabnahme erfolgen?",a:"Schriftlich durch Unterschrift. Das vollständige Zahlen der Rechnung wird ebenfalls als Abnahme gewertet."},
+{c:6,q:"Was ist eine fiktive Abnahme?",a:"Wird die Abnahme ohne Angabe von Gründen auch nach einer Fristsetzung nicht durchgeführt, kommt es zu einer fiktiven Abnahme und der Unternehmer kann seine vollständige Vergütung einfordern."},
+{c:6,q:"Was bedeutet Umkehr der Beweislast bei der Abnahme?",a:"Bis zur Abnahme muss der Auftragnehmer die Mängelfreiheit nachweisen; ab der Abnahme muss der Auftraggeber Mängel nachweisen. Ausnahme: schriftliche Vorbehalte bei der Abnahme."},
+
+/* Kapitel 7 */
+{c:7,q:"Welche Folge hat die Heranziehung eines Fremdfirmenmitarbeiters zu nicht vereinbarten Arbeiten?",a:"Der Mitarbeiter kann auf Einstellung im Unternehmen des Auftraggebers bestehen → Verstoß gegen das Arbeitnehmerüberlassungsgesetz AÜG. Das gilt nicht bei Leiharbeit."},
+{c:7,q:"Welche Geldbuße droht nach §16 AÜG bei illegaler Arbeitnehmerüberlassung?",a:"Bis zu 25.000 € für Verleiher und Entleiher."},
+{c:7,q:"Welche Strafe droht bei Beschäftigung eines Ausländers ohne Aufenthalts- oder Arbeitserlaubnis?",a:"Geldbuße bis zu 500.000 € oder Haftstrafe – auch wenn eine Fremdfirma beauftragt wird, die gegen das Aufenthaltsgesetz verstößt."},
+{c:7,q:"Was besagt die Prüfungspflicht?",a:"Ich muss mich davon überzeugen, dass mein Auftragnehmer (Fremdunternehmen) sich an das Gesetz hält."},
+{c:7,q:"Wann liegt Scheinselbstständigkeit vor?",a:"Wenn mindestens drei der fünf Kriterien zutreffen."},
+{c:7,q:"Nennen Sie die fünf Kriterien der Scheinselbstständigkeit.",a:"1. Mehr als 80 % des Umsatzes bei einem einzigen Auftraggeber<br>2. Gleiche Tätigkeiten auch durch nichtselbstständige Mitarbeiter<br>3. Tätigkeit entspricht der früheren Mitarbeitertätigkeit<br>4. Keine unternehmertypischen Merkmale<br>5. Keine sozialversicherungspflichtigen Mitarbeiter"},
+{c:7,q:"Welche grundlegende Frage stellt man sich bei Scheinselbstständigkeit?",a:"Ist ein Auftragnehmer in der Lage, frei zu entscheiden, einen Auftrag anzunehmen oder abzulehnen?"},
+{c:7,q:"Wann spricht man von Schwarzarbeit?",a:"Wenn eine Scheinselbstständigkeit aufgebaut wird, um das Steuergesetz zu umgehen."},
+{c:7,q:"Wie ist die Übernahme von Fremdpersonal geregelt?",a:"Fremdfirmenmitarbeiter nur mit sehr großen Schwierigkeiten (Abwerbung; meist vertraglich ausgeschlossen oder Vertrauensbruch). Personalverleihfirmen-Mitarbeiter problemlos; die Verleihfirma wird Personalvermittler und erhebt eine Provision (in der Regel dreifacher Monatslohn)."},
+
+/* Kapitel 8 */
+{c:8,q:"Wie hießen die BGV früher?",a:"UVV – Unfallverhütungsvorschriften (heute BGV/GUV)."},
+{c:8,q:"Wer erstellt die BGV und wer genehmigt sie?",a:"Die BG erstellt sie, das Arbeitsministerium muss sie genehmigen. Dadurch haben die BGV Gesetzescharakter."},
+{c:8,q:"Was schreibt die BGV den Unternehmen vor?",a:"Welche Einrichtungen und Maßnahmen zu treffen sind, wie sich Versicherte zu verhalten haben, welche und wie viele Sicherheitsfachkräfte, Sicherheitsbeauftragte, Ersthelfer und Ärzte einzusetzen sind und welche arbeitsmedizinischen Vorbeugemaßnahmen erforderlich sind."},
+{c:8,q:"Was schreibt die neue BGV bei allen Tätigkeiten am Arbeitsplatz vor?",a:"Eine Gefährdungsbeurteilung."},
+{c:8,q:"Wofür gilt Gefährdungsbeurteilung A?",a:"Für Arbeiten &lt; 24 h und maximal einer Fremdfirma."},
+{c:8,q:"Wofür gilt Gefährdungsbeurteilung B?",a:"Für Arbeiten &gt; 24 h oder beim Arbeiten mehrerer Firmen."},
+{c:8,q:"Wovon hängt die vorbeugende Maßnahme ab?",a:"Von Art und Umfang der Tätigkeiten sowie den Ergebnissen der Gefährdungsbeurteilung (z.B. Koordinator, projektbezogene Unterweisung, jährliche Sicherheitsunterweisung bei Routinetätigkeiten)."},
+{c:8,q:"Wer entscheidet über SiGeKo oder Fremdfirmenkoordinator?",a:"Es liegt im Ermessen des Projektverantwortlichen je nach Gefährdungspotential (keine gesetzliche Verpflichtung)."},
+
+/* Kapitel 9 */
+{c:9,q:"Wie hieß der SiGeKo früher und wer bestellt ihn?",a:"Baustellenkoordinator. Bestellung durch den Projektverantwortlichen (gesetzlich vorgeschrieben nur bei Bautätigkeiten)."},
+{c:9,q:"Nennen Sie die Entscheidungskriterien für die Einberufung eines SiGeKo.",a:"Dauer der Maßnahmen · Anzahl beteiligter Mitarbeiter · Anzahl beteiligter Unternehmen · Arbeiten auf verschiedenen Ebenen · besondere Gefährdungen aus der Gefährdungsanalyse · gemeinsame Nutzung von Arbeitsmitteln · u.v.a."},
+{c:9,q:"Wie stehen die Weisungsbefugnisse eines SiGeKo auf einer Baustelle?",a:"Sie stehen über hierarchischen Befugnissen."},
+{c:9,q:"Worauf bezieht sich das Weisungsbefugnis gegenüber einer Fremdfirma (FF)?",a:"Nur auf vertraglich vereinbarte Verhaltensregeln im Hause des Auftraggebers (Hausrecht)."},
+{c:9,q:"Welche drei Arten von Sicherheitsunterweisungen gibt es?",a:"Jährliche Sicherheitsunterweisung · Fremdfirmeneinweisung · Ereignisbezogene Unterweisung (z.B. nach einer Gefährdungsbeurteilung)"},
+{c:9,q:"Was gilt für die jährliche Sicherheitsunterweisung?",a:"Verpflichtend für alle Mitarbeiter durch deren Vorgesetzte; soll jährlich erfolgen; Themen frei definierbar, aber Bezug zur täglichen Arbeit; aktive Teilnahme verpflichtet – nur durchlesen geht nicht."},
+{c:9,q:"Was gilt für die Sicherheitsunterweisung von Fremdfirmen?",a:"Die MA müssen aktiv teilnehmen (Dokument aushändigen genügt nicht). Die Einweisung muss in einer den MA vertrauten Sprache erfolgen, ggf. mit Dolmetscher."},
+{c:9,q:"Was steht auf dem abgebildeten Poster?",a:"Unser Ziel: Null Unfälle · Unser Weg: Null Risiko · „Wir möchten, dass wir abends genauso gesund nach Hause gehen, wie wir morgens gekommen sind.“"},
+
+/* Kapitel 10 */
+{c:10,q:"Welche Farbe haben Betriebsanweisungen für Maschinen und Anlagen?",a:"Blau."},
+{c:10,q:"Welche Erlaubnisscheine nennt die Folie?",a:"Feuererlaubnis für Schweiß und Trennarbeiten · Befahrerlaubnis für Behälter, Gruben und Gräben · Gerüstzulassung durch befähigte Person. Dazu gehört auch die Arbeitsanmeldung."},
+{c:10,q:"Welche fünf Kostenarten zeigt das Diagramm „Was kostet Arbeitssicherheit?“",a:"Gesamtkosten Arbeitssicherheit · Beitragskosten BG (Unfälle) · Technische Kosten · Kosten durch Mitarbeiterausfall · Organisatorische Kosten"},
+{c:10,q:"Wie entwickeln sich die meldepflichtigen Unfälle im Diagramm?",a:"2000 bis 2003 ca. zwischen 45 und 52; ab 2004 deutlich niedrigere Balken (rote Pfeilmarkierung auf 2004); bis 2010 nahe bei null."},
+{c:10,q:"Wofür steht LoTo?",a:"Lock out - Tag out · Absperren – Kennzeichnen"},
+{c:10,q:"Was ist das Ziel von LoTo?",a:"„Beherrschung gefährlicher Energien an Maschinen und Anlagen“ bei Eingriffen der Instandhaltung oder von Serviceteams."}
+];
+
+/* ---------------------------------------------------------
+   WISSENSTEST – Multiple Choice (t:"mc") und offene Fragen (t:"open")
+   --------------------------------------------------------- */
+const QUIZ = [
+/* Kapitel 1 */
+{c:1,t:"mc",q:"Welche drei Methoden garantieren laut Folie den Erfolg von technischen Analysen?",
+ o:["Frequentielle Arbeitskarten, rundgangbasierte Inspektionen, Schwerpunktaktionen","Kärtchenmethode, SPS-Analyse, Prämiensystem","Schwachstellenanalyse, Gefährdungsbeurteilung, LoTo","Lastenheft, Pflichtenheft, Abnahme"],a:0,
+ sol:"1. Frequentielle Arbeitskarten, 2. Rundgangbasierte Inspektionen (RFID-Chip und Chipleser, Bar-Code Leser), 3. Schwerpunktaktionen.",
+ src:"Folie 1 – Methoden garantieren den Erfolg von technischen Analysen"},
+{c:1,t:"mc",q:"Was ist eine Anomalie?",
+ o:["Ein bereits eingetretener Totalausfall","Eine Panne, die heute erkennbar ist, aber erst in der Zukunft zu Ausfällen führt","Ein Fehler in der SPS-Steuerung","Ein nicht behobener Garantiefall"],a:1,
+ sol:"Anomalien sind Pannen, die heute erkennbar sind, aber erst in der Zukunft zu Ausfällen führen.",
+ src:"Folie 3 – Die Kärtchenmethode"},
+{c:1,t:"mc",q:"Welche Bedingung nennt die Folie für die Definition der Schwerpunktanlage?",
+ o:["Nur Engpassmaschinen sichern den Erfolg der Methode","Es müssen alle Maschinen erfasst werden","Die Anlage muss stillstehen","Die Anlage muss älter als 10 Jahre sein"],a:0,
+ sol:"Nur Engpassmaschinen sichern den Erfolg der Methode.",
+ src:"Folie 4 – Tabelle Aktion / Bedingung"},
+{c:1,t:"open",q:"Nennen Sie die drei Ebenen der Pyramide zur zustandsorientierten Instandhaltung.",
+ sol:"Spitze: Expertenniveau; mittlere Ebene: Instandhaltung Facharbeiterniveau; untere Ebene: Instandhaltung Basisniveau.",
+ src:"Folie 2 – Pyramide mit drei Ebenen"},
+{c:1,t:"open",q:"Welche drei Bereiche gehören zum Übergang in die Nutzungsphase der Kärtchenmethode?",
+ sol:"An der Maschine, in der Werkstatt und die Verwaltung roter Kärtchen.",
+ src:"Folie 4 – Übergang in die Nutzungsphase"},
+
+/* Kapitel 2 */
+{c:2,t:"mc",q:"Wie wäre eine korrekte Reparatur durchzuführen?",
+ o:["Erst den Rest instand setzen, dann die Ausfallursache beseitigen","Erst die Ausfallursache beseitigen, dann den Rest instand setzen","Nur die sichtbaren Schäden beheben","Das Bauteil immer komplett tauschen"],a:1,
+ sol:"Erst die Ausfallursache beseitigen, dann den Rest instand setzen.",
+ src:"Folie 6 – Schadensursachenanalyse"},
+{c:2,t:"mc",q:"Warum tritt der gleiche Schaden nach einer Reparatur früher auf als im Originalzustand?",
+ o:["Weil Ersatzteile schlechter sind","Weil das Umfeld geschwächt ist","Weil die Maschine älter geworden ist","Weil die SPS neu programmiert wurde"],a:1,
+ sol:"Der gleiche Schaden tritt nach einer Reparatur früher auf als im Originalzustand, da das Umfeld geschwächt ist.",
+ src:"Folie 6 – Schadensursachenanalyse"},
+{c:2,t:"mc",q:"Welche Werte nennt die Folie für Referenzzyklus und gemessenen Zyklus?",
+ o:["11,25 und 12,45","10,00 und 11,25","12,45 und 11,25","2,82 und 3,45"],a:0,
+ sol:"Referenzzyklus: 11,25; gemessener Zyklus: 12,45.",
+ src:"Folie 7 – SPS-gestützte Zyklusanalyse"},
+{c:2,t:"open",q:"Welches Ergebnis hält die Folie zur Schadensursachenanalyse in den beiden Diagrammen fest?",
+ sol:"Da der Maßnahmenschwerpunkt auf eine korrekte Abarbeitung der Pannenursache gelegt wurde, sinkt die Anzahl der Pannen und die Instandsetzungszeit steigt (jedoch nur vorübergehend).",
+ src:"Folie 6 – Ergebnisse Schadensursachenanalyse"},
+{c:2,t:"open",q:"Welchen Tipp gibt die Folie zur technischen Inspektionskarte für Maschinenführer?",
+ sol:"Man sollte sich nicht darauf verlassen, dass Maschinenführer Anomalien freiwillig melden, sondern man sollte sie gezielt an Schwachstellen heranführen!",
+ src:"Folie 5 – Technische Inspektionskarte (Niveau 1)"},
+
+/* Kapitel 3 */
+{c:3,t:"mc",q:"Woraus setzt sich die Mittlere Instandsetzungszeit MRT zusammen?",
+ o:["MTTR + Nacharbeit + Stundenverbuchung","Maschinenlaufzeit + Rüstzeit","Pannenanzahl × Stückzahl","Stillstand + Prämie"],a:0,
+ sol:"MRT = MTTR + Nacharbeit + Stundenverbuchung.",
+ src:"Folie 9 – Erläuterungen im gelben Feld"},
+{c:3,t:"mc",q:"Wie hoch ist der technische Gesamtaufwand im Rechenbeispiel?",
+ o:["11500 h","16623 h","28954 h","831 h"],a:2,
+ sol:"Technischer Gesamtaufwand: 28954 h (11500 h + 16623 h + 831 h).",
+ src:"Folie 9 – Untere Berechnung"},
+{c:3,t:"mc",q:"Was kennzeichnet Niveautyp 1?",
+ o:["Einzelfertigung mit Wiederholzeit über 10 min","Kleinserienfertigung mit 1–10 min","Großserienfertigung mit Wiederholzeit ~ 0,6 min","Projektfertigung ohne Wiederholzeit"],a:2,
+ sol:"Niveautyp 1 = Großserienfertigung, Wiederholzeit ~ 0,6 min.",
+ src:"Folie 11 – Erklärung des Begriffs Methodenniveau"},
+{c:3,t:"open",q:"Nennen Sie die fünf Arbeitsschritte von der Analysemethode bis zur Anwendung der Ergebnisse.",
+ sol:"1. Analysemethode festlegen, 2. Rahmen der Analyse festlegen, 3. Analysen durchführen, 4. Analysen auswerten, 5. Analyseergebnisse anwenden.",
+ src:"Folie 10 – Analysemethode festlegen"},
+{c:3,t:"open",q:"Beschreiben Sie den Verlauf des Erfüllungsmodells und des Leistungsmodells im Prämiendiagramm.",
+ sol:"Erfüllungsmodell (rote Linie): beginnt bei 80 % Zielvorgabe und 0 % Prämie, steigt bis 100 % auf 70 % Prämie und bis 120 % auf 100 % Prämie. Leistungsmodell (blaue Linie): beginnt bei 100 % Zielvorgabe und 0 % Prämie, steigt bis 120 % auf 100 % Prämie; die 50-%-Markierung liegt bei ungefähr 110 % Zielvorgabe.",
+ src:"Folie 12 – Verschiedene Prämiengrundmodelle"},
+
+/* Kapitel 4 */
+{c:4,t:"mc",q:"Warum eignen sich Prämiensysteme ideal als Steuerungsmittel?",
+ o:["Weil sie leicht wieder abgeschafft werden können","Weil prämierte Indikatoren sich überproportional entwickeln","Weil sie keine Ausnahmeregeln kennen","Weil sie die Löhne senken"],a:1,
+ sol:"Prämierte Indikatoren entwickeln sich überproportional. Somit eignen sich Prämiensysteme ideal als Steuerungsmittel.",
+ src:"Folie 13 – Sind Leistungsprämiensysteme sinnvoll?"},
+{c:4,t:"mc",q:"Welches Prinzip muss für die Zahlung einer Prämie gelten?",
+ o:["Das Prinzip der Gleichbehandlung","Das Prinzip von Versicherungsverträgen","Das Prinzip von Sportwettkämpfen: Nur wenn das Spiel gewonnen wird, kann eine Siegprämie gezahlt werden","Das Prinzip der Kostendeckung"],a:2,
+ sol:"Für die Zahlung einer Prämie muss das Prinzip von Sportwettkämpfen gelten.",
+ src:"Folie 13 – Sind Leistungsprämiensysteme sinnvoll?"},
+{c:4,t:"mc",q:"Wie lautet die Antwort der Folie auf die Frage „Fremdvergabe?“",
+ o:["Nein, niemals","„Ja“ – aber nicht um jeden Preis!","Nur bei Engpassmaschinen","Nur mit Werkvertrag"],a:1,
+ sol:"Fremdvergabe? „Ja“ – aber nicht um jeden Preis!",
+ src:"Folie 14 – Fremdvergaben"},
+{c:4,t:"open",q:"Was ist die Kernforderung der modernen Instandhaltung im Zusammenhang mit Fremdvergabe?",
+ sol:"In der modernen Instandhaltung (z.B. „lean-maintenance“ / Flexible Instandhaltung) wird angestrebt, sich nur auf das Wesentliche (z.B. die Wertschöpfungselemente) zu konzentrieren. Das könnte bedeuten, dass leicht ersetzbare Funktionen outgesourct oder fremd vergeben werden.",
+ src:"Folie 14 – Kernforderung"},
+{c:4,t:"open",q:"In welchen Bereichen sind Fremdvergaben häufig zu finden?",
+ sol:"Integrierte Instandhaltung, technische Serviceabteilungen, technisches Personal, Sachverständige und Spezialisten, Ingenieurabteilung, Experten.",
+ src:"Folie 15 – In diesen Bereichen sind Fremdvergaben häufig zu finden"},
+
+/* Kapitel 5 */
+{c:5,t:"mc",q:"Was schuldet der Dienstverpflichtete?",
+ o:["Einen Erfolg","Nur eine Leistung (Bemühen), aber keinen Erfolg","Die Vollendung eines Werks","Eine Garantie"],a:1,
+ sol:"Der Dienstverpflichtete schuldet nur eine Leistung (Bemühen) aber keinen Erfolg.",
+ src:"Folie 17 – Der Dienstvertrag"},
+{c:5,t:"mc",q:"Welcher ist der bekannteste Dienstvertrag?",
+ o:["Der Werkvertrag","Der Arbeitsvertrag","Der Wartungsvertrag","Der Kostenvoranschlag"],a:1,
+ sol:"Der bekannteste Dienstvertrag ist der Arbeitsvertrag.",
+ src:"Folie 17 – Der Dienstvertrag"},
+{c:5,t:"mc",q:"Was garantieren Wartungsverträge dem Auftraggeber?",
+ o:["Eine definiert abrufbare Dienstleistung","Einen festen Preis","Die Mängelfreiheit aller Anlagen","Eine 24h-Ersatzteilgarantie"],a:0,
+ sol:"Wartungsverträge garantieren dem Auftraggeber eine definiert abrufbare Dienstleistung.",
+ src:"Folie 17 – Weitere Beispiele aus der Instandhaltung"},
+{c:5,t:"open",q:"Nennen Sie die vier Merkmale von Dienstverträgen.",
+ sol:"Der Dienstverpflichtete schuldet einen versprochenen Dienst. Der Dienstberechtigte verpflichtet sich zur Entrichtung einer vereinbarten Vergütung. Dienstverhältnisse haben keine zeitliche Begrenzung. Die Beendigung erfolgt über eine Kündigung.",
+ src:"Folie 17 – Der Dienstvertrag"},
+{c:5,t:"open",q:"Nennen Sie die drei Beteiligten und die Verbindungen im Dreieckverhältnis der Arbeitnehmerüberlassung.",
+ sol:"Verleiher/Zeitarbeitsunternehmen, Entleiher/Kunde, Leiharbeitnehmer. Verbindungen: sichert Qualifikation des Leiharbeitnehmers; zahlt für Arbeitsleistung; Arbeitsvertrag; Entlohnung; gibt seine Arbeitskraft; ist weisungsbefugt; hat die Fürsorgepflicht.",
+ src:"Folie 18 – Das Dreieckverhältnis der Arbeitnehmerüberlassung"},
+
+/* Kapitel 6 */
+{c:6,t:"mc",q:"Wann ist beim Werkvertrag die Vergütung fällig?",
+ o:["Nach Zeitaufwand","Immer an die Vollendung eines Werks gebunden","Bei Auftragserteilung","Nach Ablauf der Garantiezeit"],a:1,
+ sol:"Im Gegensatz zum Dienstvertrag ist beim Werkvertrag die Zahlung einer Vergütung immer an die Vollendung eines Werks gebunden.",
+ src:"Folie 19 – Der Werkvertrag"},
+{c:6,t:"mc",q:"Muss ein Kostenvoranschlag bezahlt werden?",
+ o:["Immer","Nie","Ohne gegenteilige Vereinbarung nicht, da er kein Bestandteil der Werkleistung ist","Nur bei Überschreitung"],a:2,
+ sol:"Wird nichts Gegenteiliges vereinbart, ist der Kostenvoranschlag kein Bestandteil der Werkleistung und muss somit auch nicht bezahlt werden.",
+ src:"Folie 19 – Der Kostenvoranschlag"},
+{c:6,t:"mc",q:"Welche drei typischen Vergütungsformen nennt die Folie?",
+ o:["Nach Einheitspreisen, nach Zeitaufwand, nach Pauschalpreis","Nach Stückzahl, nach Gewicht, nach Volumen","Nur Pauschalpreis","Nach Erfolg, nach Aufwand, nach Prämie"],a:0,
+ sol:"Vergütung nach Einheitspreisen (z.B. 12,- € pro m² verlegter Fliesen), nach Zeitaufwand (z.B. Abrechnung einer Taxifahrt), nach Pauschalpreis (z.B. 237,- € für das Wechseln eines Auspufftopfes).",
+ src:"Folie 19 – Vergütungsformen"},
+{c:6,t:"open",q:"Was ist ein Pflichtenheft und welche Folge hat die Akzeptanz durch den Kunden?",
+ sol:"Ein Pflichtenheft ist die Umwandlung des Lastenhefts (durch den Auftragnehmer) in einen technisch realisierbaren Lösungsvorschlag. Wird es vom Kunden akzeptiert, wird es Teil des Angebots und Bestandteil der Endabnahme.",
+ src:"Folie 20 – Lastenheft – Pflichtenheft"},
+{c:6,t:"open",q:"Erklären Sie die Umkehr der Beweislast bei der Abnahme.",
+ sol:"Bis zum Zeitpunkt der Abnahme muss der Auftragnehmer nachweisen, dass der Auftrag mängelfrei durchgeführt wurde. Ab der Abnahme muss der Auftraggeber nachweisen, dass das Werk Mängel aufweist. Ausnahme: schriftliche Vorbehalte bei der Abnahme. Die Verjährungsfrist beginnt mit dem Abnahmetermin.",
+ src:"Folie 21 – Die rechtliche Seite der Abnahme"},
+
+/* Kapitel 7 */
+{c:7,t:"mc",q:"Welche Geldbuße nennt §16 AÜG für illegale Arbeitnehmerüberlassung?",
+ o:["Bis zu 5.000 €","Bis zu 25.000 €","Bis zu 250.000 €","Bis zu 500.000 €"],a:1,
+ sol:"Illegale Arbeitnehmerüberlassung kann für Verleiher und Entleiher mit einer Geldbuße bis zu 25.000 € geahndet werden.",
+ src:"Folie 22 – §16 AÜG"},
+{c:7,t:"mc",q:"Ab wann liegt Scheinselbstständigkeit vor?",
+ o:["Bei einem von fünf Kriterien","Bei mindestens drei von fünf Kriterien","Bei allen fünf Kriterien","Bei mehr als 80 % Umsatz allein"],a:1,
+ sol:"Man kann vom Tatbestand der Scheinselbstständigkeit ausgehen, wenn mindestens drei der fünf Kriterien zutreffen.",
+ src:"Folie 23 – Wann spricht man von Scheinselbstständigkeit?"},
+{c:7,t:"mc",q:"Welche Provision erhebt die Personalverleihfirma bei Übernahme eines Mitarbeiters in der Regel?",
+ o:["Einen halben Monatslohn","Einen Monatslohn","Den dreifachen Monatslohn","10 % des Jahresgehalts"],a:2,
+ sol:"In der Regel entspricht diese einem dreifachen Monatslohn des übernommenen Mitarbeiters.",
+ src:"Folie 24 – Übernahme von Fremdpersonal"},
+{c:7,t:"open",q:"Nennen Sie die fünf Kriterien der Scheinselbstständigkeit.",
+ sol:"1. Mehr als 80 % des Umsatzes nur bei einem einzigen Auftraggeber. 2. Der Auftraggeber lässt die gleichen Tätigkeiten auch durch nichtselbstständige Mitarbeiter verrichten. 3. Die Tätigkeit entspricht der früheren Mitarbeitertätigkeit. 4. Keine unternehmertypischen Merkmale. 5. Keine sozialversicherungspflichtigen Mitarbeiter.",
+ src:"Folie 23 – Kriterien (Quelle: Wikipedia)"},
+{c:7,t:"open",q:"Was besagt die Prüfungspflicht und welche Bußgelder nennt die Folie?",
+ sol:"Ich muss mich davon überzeugen, dass mein Auftragnehmer (Fremdunternehmen) sich an das Gesetz hält. Illegale Arbeitnehmerüberlassung: bis 25.000 € (§16 AÜG). Beschäftigung eines Ausländers ohne Aufenthalts- oder Arbeitserlaubnis: bis 500.000 € oder Haftstrafe – auch bei Beauftragung einer Fremdfirma, die gegen das Aufenthaltsgesetz verstößt.",
+ src:"Folie 22 – Die rechtliche Seite des Fremdvergabemanagements"},
+
+/* Kapitel 8 */
+{c:8,t:"mc",q:"Wie hießen die BGV früher?",
+ o:["UVV – Unfallverhütungsvorschriften","AÜG","SiGeKo","LoTo"],a:0,
+ sol:"BGV (GUV), früher UVV – Unfallverhütungsvorschriften.",
+ src:"Folie 26 – BGV (GUV)"},
+{c:8,t:"mc",q:"Wer erstellt die BGV und wer muss sie genehmigen?",
+ o:["Der Betrieb erstellt, die BG genehmigt","Die BG erstellt, das Arbeitsministerium genehmigt","Das Arbeitsministerium erstellt, die BG genehmigt","Die Berufsgenossenschaft erstellt ohne Genehmigung"],a:1,
+ sol:"Die BGV wird von der BG erstellt und muss vom Arbeitsministerium genehmigt werden. Dadurch haben die BGV Gesetzescharakter.",
+ src:"Folie 26 – BGV (GUV)"},
+{c:8,t:"mc",q:"Wofür gilt Gefährdungsbeurteilung B?",
+ o:["Für Arbeiten &lt; 24 h und maximal einer Fremdfirma","Für Arbeiten &gt; 24 h oder beim Arbeiten mehrerer Firmen","Nur für Bautätigkeiten","Nur für Elektroarbeiten"],a:1,
+ sol:"Gefährdungsbeurteilung B: Für Arbeiten &gt; 24 h oder beim Arbeiten mehrerer Firmen.",
+ src:"Folie 27 – Gefährdungsbeurteilungen"},
+{c:8,t:"open",q:"Was schreibt die BGV den Unternehmen vor?",
+ sol:"Welche Einrichtungen und Maßnahmen getroffen werden müssen, um Unfälle und Berufskrankheiten zu verhindern; wie sich die Versicherten zu verhalten haben; welche und wie viele Sicherheitsfachkräfte, Sicherheitsbeauftragte, Ersthelfer und Ärzte einzusetzen sind und welche arbeitsmedizinischen Vorbeugemaßnahmen erforderlich sind.",
+ src:"Folie 26 – Berufsgenossenschaftliche Vorschriften"},
+{c:8,t:"open",q:"Wovon hängt die aus der Gefährdungsbeurteilung resultierende vorbeugende Maßnahme ab?",
+ sol:"Je nach Art und Umfang der Tätigkeiten sowie entsprechend der Ergebnisse der Gefährdungsbeurteilung. Z.B. Einsatz eines Koordinators, projektbezogene Unterweisung oder jährliche Sicherheitsunterweisung bei Routinetätigkeiten.",
+ src:"Folie 27 – Text im grauen Feld"},
+
+/* Kapitel 9 */
+{c:9,t:"mc",q:"Wer bestellt den SiGeKo?",
+ o:["Die Berufsgenossenschaft","Der Projektverantwortliche","Der Betriebsrat","Das Arbeitsministerium"],a:1,
+ sol:"Bestellung durch Projektverantwortlichen (gesetzlich vorgeschrieben nur bei Bautätigkeiten).",
+ src:"Folie 28 – Der SiGeKo"},
+{c:9,t:"mc",q:"Worauf bezieht sich das Weisungsbefugnis gegenüber einer Fremdfirma?",
+ o:["Auf alle Tätigkeiten der Fremdfirma","Nur auf vertraglich vereinbarte Verhaltensregeln im Hause des Auftraggebers (Hausrecht)","Auf die Entlohnung","Auf die Arbeitssicherheit der Fremdfirma insgesamt"],a:1,
+ sol:"Das Weisungsbefugnis gegenüber einer FF bezieht sich nur auf vertraglich vereinbarte Verhaltensregeln im Hause des Auftraggebers (Hausrecht).",
+ src:"Folie 29 – Achtung"},
+{c:9,t:"mc",q:"Wie stehen die Weisungsbefugnisse eines SiGeKo auf einer Baustelle?",
+ o:["Unter den hierarchischen Befugnissen","Gleichrangig","Über hierarchischen Befugnissen","Sie gelten nur für Fremdfirmen"],a:2,
+ sol:"Auf einer Baustelle stehen die Weisungsbefugnisse eines SiGeKo über hierarchischen Befugnissen.",
+ src:"Folie 28 – Achtung"},
+{c:9,t:"open",q:"Nennen Sie die drei Arten von Sicherheitsunterweisungen und je ein Kennzeichen.",
+ sol:"Jährliche Sicherheitsunterweisung (verpflichtend durch Vorgesetzte), Fremdfirmeneinweisung (aktiv, in vertrauter Sprache, ggf. Dolmetscher), ereignisbezogene Unterweisung (z.B. nach einer Gefährdungsbeurteilung).",
+ src:"Folie 30 – Sicherheitsunterweisungen"},
+{c:9,t:"open",q:"Welche Kriterien sprechen für die Einberufung eines SiGeKo?",
+ sol:"Dauer der technischen Maßnahmen (z.B. länger als 500 MA-Tage oder 30 Arbeitstage), Anzahl beteiligter Mitarbeiter (z.B. &gt; 20 pro Schicht), Anzahl beteiligter Unternehmen, Arbeiten auf verschiedenen Ebenen, besondere Gefährdungen aus der Gefährdungsanalyse, gemeinsame Nutzung von Arbeitsmitteln, u.v.a.",
+ src:"Folie 28 – Entscheidungskriterien"},
+
+/* Kapitel 10 */
+{c:10,t:"mc",q:"Welche Farbe kennzeichnet Betriebsanweisungen für Maschinen und Anlagen?",
+ o:["Rot","Gelb","Blau","Grün"],a:2,
+ sol:"Blau für Maschinen und Anlagen.",
+ src:"Folie 31 – Die Betriebsanweisungen"},
+{c:10,t:"mc",q:"Welche Erlaubnisscheine nennt die Folie?",
+ o:["Feuererlaubnis, Befahrerlaubnis, Gerüstzulassung","Fahrerlaubnis, Kranerlaubnis, Schweißerlaubnis","Nur die Arbeitsanmeldung","Betriebsanweisung, Gefährdungsbeurteilung, LoTo"],a:0,
+ sol:"Feuererlaubnis für Schweiß und Trennarbeiten; Befahrerlaubnis für Behälter, Gruben und Gräben; Gerüstzulassung durch befähigte Person. Dazu gehört auch die Arbeitsanmeldung.",
+ src:"Folie 31 – Die Erlaubnisscheine"},
+{c:10,t:"mc",q:"Wofür steht LoTo?",
+ o:["Low Torque","Lock out - Tag out, Absperren – Kennzeichnen","Logistik Total","Long Tool"],a:1,
+ sol:"LoTo = Lock out - Tag out, Absperren – Kennzeichnen.",
+ src:"Folie 33 – LoTo"},
+{c:10,t:"open",q:"Nennen Sie die fünf dargestellten Kostenarten zum Thema „Was kostet Arbeitssicherheit?“",
+ sol:"Gesamtkosten Arbeitssicherheit, Beitragskosten BG (Unfälle), Technische Kosten, Kosten durch Mitarbeiterausfall, Organisatorische Kosten.",
+ src:"Folie 32 – Oberes Diagramm"},
+{c:10,t:"open",q:"Was bedeutet LoTo und wo kommt es zum Einsatz?",
+ sol:"Lock out - Tag out, Absperren – Kennzeichnen: „Beherrschung gefährlicher Energien an Maschinen und Anlagen“ bei Eingriffen der Instandhaltung oder von Serviceteams.",
+ src:"Folie 33 – LoTo"}
+];
+
+</script>
+<script>
+/* =========================================================
+   ANWENDUNG – Navigation, Fortschritt, Karten, Test, Suche
+   ========================================================= */
+
+const LS_KEY = "lernplattform_instandhaltung_v1";
+
+let state = {
+  chapters: {},   // { "1": {started:true, done:true} }
+  cards: {},      // { "12": "known" | "review" }
+  quiz: {},       // { "1-0": "right" | "wrong" }
+  lastChapter: 1
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw){
+      const p = JSON.parse(raw);
+      state.chapters = p.chapters || {};
+      state.cards = p.cards || {};
+      state.quiz = p.quiz || {};
+      state.lastChapter = p.lastChapter || 1;
+    }
+  }catch(e){ console.warn("Fortschritt konnte nicht geladen werden:", e); }
+}
+function saveState(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+  catch(e){ console.warn("Fortschritt konnte nicht gespeichert werden:", e); }
+}
+loadState();
+
+/* ---------- Hilfsfunktionen ---------- */
+const $  = (s, r) => (r||document).querySelector(s);
+const $$ = (s, r) => Array.from((r||document).querySelectorAll(s));
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function stripHtml(html){
+  const d = document.createElement("div");
+  d.innerHTML = html;
+  return d.textContent || "";
+}
+function toast(msg){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._t);
+  t._t = setTimeout(()=> t.classList.remove("show"), 2000);
+}
+const chapterById = id => CHAPTERS.find(c => c.id === Number(id));
+
+/* ---------- Fortschritt ---------- */
+function chapterProgress(id){
+  const s = state.chapters[id] || {};
+  if(s.done) return 100;
+  if(s.started) return 50;
+  return 0;
+}
+function overallProgress(){
+  const tot = CHAPTERS.length * 100;
+  const sum = CHAPTERS.reduce((a,c)=> a + chapterProgress(c.id), 0);
+  return Math.round(sum / tot * 100);
+}
+function doneCount(){
+  return CHAPTERS.filter(c => (state.chapters[c.id]||{}).done).length;
+}
+function cardsForDeck(deckId){
+  return deckId === "all" ? FLASHCARDS : FLASHCARDS.filter(k => k.c === Number(deckId));
+}
+function deckStats(deckId){
+  const cards = cardsForDeck(deckId);
+  const known = cards.filter(k => state.cards[FLASHCARDS.indexOf(k)] === "known").length;
+  return {known, total: cards.length, pct: cards.length ? Math.round(known/cards.length*100) : 0};
+}
+function quizForChapter(id){ return QUIZ.filter(q => q.c === Number(id)); }
+function quizStats(id){
+  const qs = quizForChapter(id);
+  const answered = qs.filter((q,i)=> state.quiz[id+"-"+QUIZ.indexOf(q)]);
+  const right = qs.filter(q => state.quiz[id+"-"+QUIZ.indexOf(q)] === "right").length;
+  return {right, answered: answered.length, total: qs.length,
+          pct: qs.length ? Math.round(right/qs.length*100) : 0};
+}
+
+/* ---------- Navigation ---------- */
+let currentView = "home";
+function go(view, arg){
+  currentView = view;
+  $$(".view").forEach(v => v.classList.remove("active"));
+  $$("#nav button").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+  const el = document.getElementById("view-" + view);
+  if(!el) return;
+  el.classList.add("active");
+  if(view === "home")      renderHome();
+  if(view === "chapter")   renderChapter(arg);
+  if(view === "cards")     renderCards(arg);
+  if(view === "quiz")      renderQuiz(arg);
+  if(view === "search")    renderSearch(arg);
+  window.scrollTo({top:0, behavior:"instant"});
+}
+
+/* ---------- Startseite ---------- */
+function renderHome(){
+  const pct = overallProgress();
+  const cardsKnown = Object.values(state.cards).filter(v=>v==="known").length;
+  const quizRight  = Object.values(state.quiz).filter(v=>v==="right").length;
+
+  const chapCards = CHAPTERS.map(c => {
+    const p = chapterProgress(c.id);
+    const done = p === 100;
+    const started = p > 0 && !done;
+    const st = done ? "Abgeschlossen" : (started ? "Begonnen" : "Nicht begonnen");
+    const qs = quizStats(c.id);
+    const ds = deckStats(c.id);
+    return `
+      <div class="chapter-card ${done?'done':''}" onclick="go('chapter', ${c.id})">
+        <div class="cc-top">
+          <span class="cc-num">Kapitel ${c.id}</span>
+          <span class="cc-state ${done?'ok':''}">${st}</span>
+        </div>
+        <div class="cc-title">${esc(c.title)}</div>
+        <div class="cc-sub">${esc(c.sub)}</div>
+        <div class="pbar ${done?'green':''}"><i style="width:${p}%"></i></div>
+        <div class="pmeta"><span>${c.pages.length} Folien</span><span>${qs.right}/${qs.total} Test · ${ds.known}/${ds.total} Karten</span></div>
+      </div>`;
+  }).join("");
+
+  $("#view-home").innerHTML = `
+    <section class="hero">
+      <div class="ring"></div>
+      <span class="eyebrow">Lernplattform · 10 Kapitel · 33 Folien</span>
+      <h1>Instandhaltung &amp; Schwachstellenanalyse</h1>
+      <p class="lead">Vollständige Lernunterlage nach Prof. Dr. Mexis – Schwachstellenanalyse, Personalbedarf, Vertragsrecht, Arbeitssicherheit. Alle Inhalte der Folien, dazu Lernkarten, Wissenstest und Suche.</p>
+      <div class="statrow">
+        <div class="stat"><b>${pct}%</b><span>Gesamtfortschritt</span></div>
+        <div class="stat"><b>${doneCount()}/${CHAPTERS.length}</b><span>Kapitel fertig</span></div>
+        <div class="stat"><b>${cardsKnown}/${FLASHCARDS.length}</b><span>Karten gewusst</span></div>
+        <div class="stat"><b>${quizRight}/${QUIZ.length}</b><span>Fragen richtig</span></div>
+      </div>
+      <div style="margin-top:24px;max-width:520px">
+        <div class="pbar"><i style="width:${pct}%"></i></div>
+        <div class="pmeta"><span>Gesamtfortschritt über alle Kapitel</span><span>${pct}%</span></div>
+      </div>
+    </section>
+
+    <div class="grid cols-3" style="margin-bottom:32px">
+      <div class="card" onclick="go('cards')" style="cursor:pointer">
+        <h3 style="margin-top:0">Lernkarten</h3>
+        <p class="small muted" style="margin-bottom:12px">${FLASHCARDS.length} Karten aus Definitionen und Fachbegriffen.</p>
+        <div class="pbar"><i style="width:${Math.round(cardsKnown/FLASHCARDS.length*100)}%"></i></div>
+      </div>
+      <div class="card" onclick="go('quiz')" style="cursor:pointer">
+        <h3 style="margin-top:0">Wissenstest</h3>
+        <p class="small muted" style="margin-bottom:12px">${QUIZ.length} Fragen – Multiple Choice und offene Fragen.</p>
+        <div class="pbar"><i style="width:${Math.round(quizRight/QUIZ.length*100)}%"></i></div>
+      </div>
+      <div class="card" onclick="go('search')" style="cursor:pointer">
+        <h3 style="margin-top:0">Volltextsuche</h3>
+        <p class="small muted" style="margin-bottom:12px">Kapitelübergreifend alle Folieninhalte durchsuchen.</p>
+      </div>
+    </div>
+
+    <h2 style="margin-top:0">Alle Kapitel</h2>
+    <div class="grid chapters">${chapCards}</div>
+  `;
+}
+
+/* ---------- Kapitelansicht ---------- */
+function renderChapter(id){
+  id = Number(id) || 1;
+  const c = chapterById(id);
+  if(!c){ go("home"); return; }
+  state.lastChapter = id;
+  if(!state.chapters[id]) state.chapters[id] = {};
+  if(!state.chapters[id].started){ state.chapters[id].started = true; saveState(); }
+
+  const idx = CHAPTERS.findIndex(x => x.id === id);
+  const prev = CHAPTERS[idx-1], next = CHAPTERS[idx+1];
+  const done = !!state.chapters[id].done;
+  const qs = quizStats(id), ds = deckStats(id);
+
+  const pages = c.pages.map(p => `
+    <section class="page" id="p-${p.n}">
+      <div class="page-head"><span class="pn">Folie ${p.n}</span></div>
+      <h3 class="title">${esc(p.t)}</h3>
+      ${p.body}
+    </section>`).join("");
+
+  $("#view-chapter").innerHTML = `
+    <div class="chap-head">
+      <div class="meta">
+        <span class="badge cy">Kapitel ${c.id} von ${CHAPTERS.length}</span>
+        <span class="badge">Folien ${c.pages[0].n}–${c.pages[c.pages.length-1].n}</span>
+        ${done ? '<span class="badge gr">Abgeschlossen</span>' : ''}
+      </div>
+      <h1>${esc(c.title)}</h1>
+      <p class="lead">${esc(c.sub)}</p>
+      <div class="grid cols-2" style="margin-top:18px">
+        <div>
+          <div class="pbar ${done?'green':''}"><i style="width:${chapterProgress(id)}%"></i></div>
+          <div class="pmeta"><span>Kapitelfortschritt</span><span>${chapterProgress(id)}%</span></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+          <button class="btn ghost" onclick="go('cards','${id}')">Lernkarten (${ds.known}/${ds.total})</button>
+          <button class="btn ghost" onclick="go('quiz','${id}')">Test (${qs.right}/${qs.total})</button>
+        </div>
+      </div>
+    </div>
+
+    ${pages}
+
+    <div class="chapnav">
+      ${prev ? `<button class="btn" onclick="go('chapter',${prev.id})">← Kapitel ${prev.id}: ${esc(prev.title)}</button>` : '<span></span>'}
+      <button class="btn ${done?'done':'primary'}" onclick="toggleDone(${id})">
+        ${done ? '✓ Als abgeschlossen markiert' : 'Kapitel abschließen'}
+      </button>
+      ${next ? `<button class="btn" onclick="go('chapter',${next.id})">Kapitel ${next.id}: ${esc(next.title)} →</button>` : '<span></span>'}
+    </div>
+  `;
+}
+
+function toggleDone(id){
+  if(!state.chapters[id]) state.chapters[id] = {};
+  state.chapters[id].done = !state.chapters[id].done;
+  state.chapters[id].started = true;
+  saveState();
+  toast(state.chapters[id].done ? "Kapitel abgeschlossen" : "Markierung aufgehoben");
+  renderChapter(id);
+}
+
+/* ---------- Lernkarten ---------- */
+let deck = {id:"all", order:[], pos:0, flipped:false};
+
+function renderCards(startDeck){
+  if(startDeck && startDeck !== deck.id){ deck.id = String(startDeck); deck.pos = 0; deck.flipped = false; deck.order = []; }
+  const cards = cardsForDeck(deck.id);
+  if(!deck.order.length || deck.order.length !== cards.length){
+    deck.order = cards.map((_,i)=>i);
+    deck.pos = Math.min(deck.pos, cards.length-1);
+  }
+  const st = deckStats(deck.id);
+
+  const decks = [`<button class="pill ${deck.id==='all'?'active':''}" onclick="setDeck('all')">Alle (${FLASHCARDS.length})</button>`]
+    .concat(CHAPTERS.filter(c=>FLASHCARDS.some(k=>k.c===c.id))
+      .map(c=>`<button class="pill ${deck.id==String(c.id)?'active':''}" onclick="setDeck('${c.id}')">K${c.id} · ${esc(c.title.split(" ").slice(0,3).join(" "))}</button>`)).join("");
+
+  $("#view-cards").innerHTML = `
+    <span class="eyebrow">Lernkarten</span>
+    <h1>Karteikarten</h1>
+    <p class="lead">Klicken Sie auf eine Karte, um sie umzudrehen. Bewerten Sie danach, ob Sie die Antwort wussten – der Fortschritt wird lokal gespeichert.</p>
+    <div class="deck-bar">${decks}</div>
+    <div class="flash-wrap">
+      <div class="pbar"><i style="width:${st.pct}%"></i></div>
+      <div class="pmeta" style="margin-bottom:18px"><span>Gewusst in diesem Stapel</span><span>${st.known}/${st.total} · ${st.pct}%</span></div>
+      <div id="flashbox"></div>
+    </div>
+  `;
+  drawCard();
+}
+
+function setDeck(id){
+  deck = {id:id, order:[], pos:0, flipped:false};
+  renderCards();
+}
+
+function drawCard(){
+  const cards = cardsForDeck(deck.id);
+  const box = $("#flashbox");
+  if(!cards.length){ box.innerHTML = '<div class="empty">Keine Karten in diesem Stapel.</div>'; return; }
+  const card = cards[deck.order[deck.pos]];
+  const gi = FLASHCARDS.indexOf(card);
+  const status = state.cards[gi];
+  const c = chapterById(card.c);
+
+  box.innerHTML = `
+    <div class="flash ${deck.flipped?'flipped':''}" onclick="flipCard()">
+      <div class="flash-inner">
+        <div class="flash-face flash-front">
+          <span class="flash-tag">Kapitel ${card.c} · ${esc(c.title)}</span>
+          <div class="flash-q">${card.q}</div>
+          <span class="flash-hint">Klicken zum Umdrehen</span>
+        </div>
+        <div class="flash-face flash-back">
+          <span class="flash-tag">Antwort</span>
+          <div class="flash-a">${card.a}</div>
+          <span class="flash-hint">Klicken für die Frage</span>
+        </div>
+      </div>
+    </div>
+    <div class="flash-actions">
+      <button class="btn ghost" onclick="event.stopPropagation();cardStep(-1)">← Zurück</button>
+      <button class="btn ghost" onclick="event.stopPropagation();rateCard('review')">Nochmal üben</button>
+      <button class="btn primary" onclick="event.stopPropagation();rateCard('known')">Gewusst ✓</button>
+      <button class="btn ghost" onclick="event.stopPropagation();cardStep(1)">Weiter →</button>
+      <button class="btn ghost" onclick="event.stopPropagation();shuffleDeck()">Mischen</button>
+    </div>
+    <div class="flash-count">Karte ${deck.pos+1} von ${cards.length}${status ? ' · zuletzt: ' + (status==='known'?'gewusst':'nochmal üben') : ''}</div>
+  `;
+}
+
+function flipCard(){ deck.flipped = !deck.flipped; $("#flashbox .flash").classList.toggle("flipped", deck.flipped); }
+function cardStep(d){
+  const n = cardsForDeck(deck.id).length;
+  deck.pos = (deck.pos + d + n) % n;
+  deck.flipped = false;
+  drawCard();
+}
+function rateCard(v){
+  const cards = cardsForDeck(deck.id);
+  const card = cards[deck.order[deck.pos]];
+  state.cards[FLASHCARDS.indexOf(card)] = v;
+  saveState();
+  if(v === "known"){
+    const st = deckStats(deck.id);
+    const bar = $("#view-cards .flash-wrap .pbar i");
+    if(bar) bar.style.width = st.pct + "%";
+    const meta = $("#view-cards .flash-wrap .pmeta span:last-child");
+    if(meta) meta.textContent = `${st.known}/${st.total} · ${st.pct}%`;
+  }
+  cardStep(1);
+}
+function shuffleDeck(){
+  const n = cardsForDeck(deck.id).length;
+  deck.order = deck.order.map((_,i)=>i);
+  for(let i=deck.order.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [deck.order[i], deck.order[j]] = [deck.order[j], deck.order[i]];
+  }
+  deck.pos = 0; deck.flipped = false;
+  toast("Stapel gemischt");
+  drawCard();
+}
+
+/* ---------- Wissenstest ---------- */
+let quizChapter = 1;
+let quizFilter = "all"; // all | wrong
+
+function renderQuiz(startChapter){
+  const withQ = CHAPTERS.filter(c => quizForChapter(c.id).length);
+  if(startChapter && withQ.some(c=>c.id===Number(startChapter))){ quizChapter = Number(startChapter); quizFilter = "all"; }
+  if(!withQ.some(c=>c.id===quizChapter)) quizChapter = withQ[0].id;
+
+  const pills = withQ.map(c=>{
+    const s = quizStats(c.id);
+    return `<button class="pill ${quizChapter===c.id?'active':''}" onclick="setQuizChapter(${c.id})">K${c.id} · ${s.right}/${s.total}</button>`;
+  }).join("");
+
+  const all = quizForChapter(quizChapter);
+  let list = all;
+  if(quizFilter === "wrong"){
+    list = all.filter(q => state.quiz[quizChapter+"-"+QUIZ.indexOf(q)] === "wrong");
+  }
+  const st = quizStats(quizChapter);
+
+  const body = list.length ? list.map((q, i) => questionHtml(q, i, all)).join("")
+    : '<div class="empty">Keine Fragen in dieser Auswahl. Wählen Sie ein Kapitel oder starten Sie den Test neu.</div>';
+
+  $("#view-quiz").innerHTML = `
+    <span class="eyebrow">Wissenstest</span>
+    <h1>Testen Sie Ihr Wissen</h1>
+    <p class="lead">Fragen ausschließlich aus den Folien. Nach jeder Antwort erscheint die richtige Lösung mit der zugehörigen Stelle in den Unterlagen.</p>
+    <div class="deck-bar">${pills}</div>
+    <div class="quiz-shell">
+      <div class="card" style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:18px">
+        <div style="flex:1;min-width:220px">
+          <div class="small muted" style="margin-bottom:6px">Kapitel ${quizChapter} · ${esc(chapterById(quizChapter).title)}</div>
+          <div class="pbar"><i style="width:${st.pct}%"></i></div>
+          <div class="pmeta"><span>${st.right} von ${st.total} richtig</span><span>${st.pct}%</span></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn ghost" onclick="setQuizFilter('${quizFilter==='wrong'?'all':'wrong'}')">${quizFilter==='wrong'?'Alle Fragen':'Nur falsche wiederholen'}</button>
+          <button class="btn ghost" onclick="resetQuiz(${quizChapter})">Test zurücksetzen</button>
+        </div>
+      </div>
+      <div id="quiz-list">${body}</div>
+    </div>
+  `;
+}
+
+function questionHtml(q, i, all){
+  const key = q.c + "-" + QUIZ.indexOf(q);
+  const given = state.quiz[key];
+  const no = all.indexOf(q) + 1;
+
+  if(q.t === "mc"){
+    const opts = q.o.map((o, oi)=>{
+      let cls = "opt";
+      if(given){
+        cls += " locked";
+        if(oi === q.a) cls += " right";
+        else if(oi === q.chosen) cls += " wrong";
+      }
+      return `<button class="${cls}" onclick="answerMC('${key}',${oi},${q.a},${q.c})" ${given?'disabled':''}>
+        <span class="box">${given && oi===q.a ? '✓' : (given && oi===q.chosen ? '✕' : String.fromCharCode(65+oi))}</span>
+        <span>${o}</span>
+      </button>`;
+    }).join("");
+    return `<div class="q" id="q-${key}">
+      <div class="q-head"><span class="q-no">Frage ${no}</span><span class="q-type">Multiple Choice</span></div>
+      <div class="q-text">${q.q}</div>
+      <div class="opts">${opts}</div>
+      <div class="feedback ${given?'show':''} ${given==='right'?'ok':(given==='wrong'?'no':'')}" id="fb-${key}">
+        ${given ? feedbackInner(q, given) : ""}
+      </div>
+    </div>`;
+  }
+
+  return `<div class="q" id="q-${key}">
+    <div class="q-head"><span class="q-no">Frage ${no}</span><span class="q-type">Offene Frage</span></div>
+    <div class="q-text">${q.q}</div>
+    <textarea class="open-answer" id="ta-${key}" placeholder="Antwort in eigenen Worten …" ${given?'disabled':''}>${given && q.chosenText ? esc(q.chosenText) : ""}</textarea>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="revealOpen('${key}',${q.c})" ${given?'disabled':''}>Antwort vergleichen</button>
+    </div>
+    <div class="feedback ${given?'show':''} ${given==='right'?'ok':(given==='wrong'?'no':'')}" id="fb-${key}">
+      ${given ? feedbackInner(q, given) : ""}
+    </div>
+  </div>`;
+}
+
+function feedbackInner(q, verdict){
+  return `<span class="verdict">${verdict==='right' ? 'Richtig' : 'Nicht richtig'}</span>
+    <div class="sol"><strong>Lösung:</strong> ${q.sol}</div>
+    <div class="src"><b>Fundstelle:</b> ${q.src}</div>`;
+}
+
+function answerMC(key, chosen, correct, chap){
+  if(state.quiz[key]) return;
+  const q = QUIZ.find(x => x.c === chap && (x.c+"-"+QUIZ.indexOf(x)) === key);
+  if(!q) return;
+  q.chosen = chosen;
+  state.quiz[key] = (chosen === correct) ? "right" : "wrong";
+  saveState();
+  const all = quizForChapter(chap);
+  const idx = all.indexOf(q);
+  const listEl = $("#q-" + key);
+  if(listEl){
+    const tmp = document.createElement("div");
+    tmp.innerHTML = questionHtml(q, idx, all);
+    listEl.replaceWith(tmp.firstElementChild);
+  }
+  refreshQuizStats();
+}
+
+function revealOpen(key, chap){
+  const q = QUIZ.find(x => (x.c+"-"+QUIZ.indexOf(x)) === key);
+  if(!q || state.quiz[key]) return;
+  const ta = $("#ta-" + key);
+  const txt = ta ? ta.value : "";
+  q.chosenText = txt;
+  const fb = $("#fb-" + key);
+  fb.className = "feedback show";
+  fb.innerHTML = `<span class="verdict" style="color:var(--cy)">Musterlösung</span>
+    <div class="sol">${q.sol}</div>
+    <div class="src"><b>Fundstelle:</b> ${q.src}</div>
+    <div class="small muted" style="margin:14px 0 8px">Vergleichen Sie Ihre Antwort und bewerten Sie sich selbst:</div>
+    <div class="selfcheck">
+      <button class="btn primary" onclick="scoreOpen('${key}',${chap},'right')">Das hatte ich</button>
+      <button class="btn ghost" onclick="scoreOpen('${key}',${chap},'wrong')">Nicht gewusst</button>
+    </div>`;
+  if(ta) ta.disabled = true;
+}
+
+function scoreOpen(key, chap, verdict){
+  state.quiz[key] = verdict;
+  saveState();
+  const q = QUIZ.find(x => (x.c+"-"+QUIZ.indexOf(x)) === key);
+  const all = quizForChapter(chap);
+  const listEl = $("#q-" + key);
+  if(listEl && q){
+    const tmp = document.createElement("div");
+    tmp.innerHTML = questionHtml(q, all.indexOf(q), all);
+    listEl.replaceWith(tmp.firstElementChild);
+  }
+  refreshQuizStats();
+}
+
+function refreshQuizStats(){
+  const st = quizStats(quizChapter);
+  const bar = $("#view-quiz .quiz-shell .pbar i");
+  if(bar) bar.style.width = st.pct + "%";
+  const meta = $("#view-quiz .quiz-shell .pmeta");
+  if(meta) meta.innerHTML = `<span>${st.right} von ${st.total} richtig</span><span>${st.pct}%</span>`;
+  const pill = $("#view-quiz .deck-bar .pill.active");
+  if(pill) pill.textContent = `K${quizChapter} · ${st.right}/${st.total}`;
+  const doneAll = quizForChapter(quizChapter).every(q => state.quiz[quizChapter+"-"+QUIZ.indexOf(q)]);
+  const existing = $("#quiz-result");
+  if(doneAll && !existing){
+    const div = document.createElement("div");
+    div.id = "quiz-result";
+    div.className = "quiz-result";
+    div.style.marginTop = "20px";
+    div.innerHTML = `<div class="big">${st.right}<small> / ${st.total}</small></div>
+      <p class="muted" style="margin:6px 0 16px">Fragen in Kapitel ${quizChapter} richtig beantwortet</p>
+      <button class="btn primary" onclick="setQuizFilter('wrong')">Falsche Antworten wiederholen</button>`;
+    $("#quiz-list").after(div);
+  }
+}
+
+function setQuizChapter(id){ quizChapter = Number(id); quizFilter = "all"; renderQuiz(); }
+function setQuizFilter(f){ quizFilter = f; renderQuiz(); }
+function resetQuiz(id){
+  Object.keys(state.quiz).forEach(k => { if(k.startsWith(id + "-")) delete state.quiz[k]; });
+  QUIZ.forEach(q => { if(q.c === Number(id)){ delete q.chosen; delete q.chosenText; } });
+  saveState();
+  renderQuiz(id);
+  toast("Test zurückgesetzt");
+}
+
+/* ---------- Volltextsuche ---------- */
+const SEARCH_INDEX = (() => {
+  const idx = [];
+  CHAPTERS.forEach(c => {
+    c.pages.forEach(p => idx.push({c:c.id, ct:c.title, n:p.n, t:p.t, text: stripHtml(p.body)}));
+  });
+  return idx;
+})();
+
+function renderSearch(query){
+  $("#view-search").innerHTML = `
+    <span class="eyebrow">Volltextsuche</span>
+    <h1>Alle Kapitel durchsuchen</h1>
+    <p class="lead">Durchsucht den vollständigen Text aller 33 Folien – inklusive Tabellen, Bildbeschreibungen und Definitionen.</p>
+    <div class="search-box">
+      <span class="ico">⌕</span>
+      <input type="search" id="searchInput" placeholder="Begriff eingeben, z. B. „Lastenheft“, „Anomalie“, „MRT“ …" autocomplete="off">
+    </div>
+    <div id="searchResults" class="small muted" style="margin-top:14px"></div>
+  `;
+  const inp = $("#searchInput");
+  inp.value = query || "";
+  inp.addEventListener("input", () => doSearch(inp.value));
+  inp.focus();
+  doSearch(inp.value);
+}
+
+function highlight(text, term){
+  if(!term) return esc(text);
+  const safe = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp("(" + safe + ")", "gi");
+  return esc(text).replace(re, "<mark>$1</mark>");
+}
+
+function doSearch(raw){
+  const term = (raw||"").trim();
+  const out = $("#searchResults");
+  if(!out) return;
+  if(term.length < 2){
+    out.innerHTML = `<span class="muted">Mindestens zwei Zeichen eingeben.</span>`;
+    return;
+  }
+  const t = term.toLowerCase();
+  const hits = [];
+  SEARCH_INDEX.forEach(e => {
+    const hay = (e.t + " " + e.text).toLowerCase();
+    let pos = hay.indexOf(t), count = 0;
+    while(pos > -1 && count < 40){ count++; pos = hay.indexOf(t, pos + t.length); }
+    if(count > 0) hits.push({e, count});
+  });
+  hits.sort((a,b) => b.count - a.count || a.e.c - b.e.c);
+
+  if(!hits.length){
+    out.innerHTML = `<div class="empty">Kein Treffer für „${esc(term)}“ in den Unterlagen.</div>`;
+    return;
+  }
+
+  const chaptersHit = [...new Set(hits.map(h=>h.e.c))];
+  out.innerHTML = `<div style="margin-bottom:16px">${hits.length} Folien mit Treffern in ${chaptersHit.length} Kapitel(n): ${chaptersHit.map(c=>"K"+c).join(", ")}</div>` +
+    hits.map(h => {
+      const full = h.e.t + " — " + h.e.text;
+      const i = full.toLowerCase().indexOf(t);
+      const start = Math.max(0, i - 90);
+      const snip = (start > 0 ? "… " : "") + full.slice(start, i + term.length + 160) + " …";
+      return `<div class="hit" onclick="go('chapter',${h.e.c}); setTimeout(()=>document.getElementById('p-${h.e.n}').scrollIntoView({behavior:'smooth',block:'start'}),60)">
+        <div class="where">Kapitel ${h.e.c} · ${esc(h.e.ct)} · Folie ${h.e.n} · ${h.count} Treffer</div>
+        <div class="snip">${highlight(snip, term)}</div>
+      </div>`;
+    }).join("");
+}
+
+/* ---------- Tastatur ---------- */
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape" && currentView === "chapter"){ go("home"); return; }
+  const tag = (document.activeElement.tagName || "").toLowerCase();
+  if(tag === "input" || tag === "textarea") return;
+  if(currentView === "cards"){
+    if(e.key === " "){ e.preventDefault(); flipCard(); }
+    if(e.key === "ArrowRight"){ cardStep(1); }
+    if(e.key === "ArrowLeft"){ cardStep(-1); }
+  }
+  if(currentView === "chapter"){
+    const c = chapterById(state.lastChapter);
+    const i = CHAPTERS.findIndex(x=>x.id===c.id);
+    if(e.key === "ArrowRight" && CHAPTERS[i+1]) go("chapter", CHAPTERS[i+1].id);
+    if(e.key === "ArrowLeft" && CHAPTERS[i-1]) go("chapter", CHAPTERS[i-1].id);
+  }
+});
+
+/* ---------- Start ---------- */
+go("home");
+
+</script>
+</body>
+</html>
